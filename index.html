@@ -1,1 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Admission & Verification Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Institutional Bar -->
+  <header class="app-header">
+    <div class="brand-title">VASIREDDY VENKATADRI INTERNATIONAL TECHNOLOGICAL UNIVERSITY</div>
+    <div class="brand-subtitle">STUDENT ADMISSION & ENROLLMENT PORTAL — 2026</div>
+  </header>
+
+  <!-- Welcome Greeting Banner (Shows after Verification) -->
+  <div id="welcomeBanner" class="welcome-banner" style="display: none;">
+    <span id="welcomeNameText">Welcome</span>
+  </div>
+
+  <main class="main-container">
+
+    <!-- ================= STAGE 1: TRIPLE-KEY AUTHENTICATION ================= -->
+    <section id="authCard" class="card auth-card">
+      <h2>Student Verification</h2>
+      <p>Enter your credentials to unlock and fill your admission profile.</p>
+
+      <div id="authAlert" class="alert-box error" style="display: none;"></div>
+
+      <div class="form-group">
+        <label for="authRegdNo">1. Registration Number *</label>
+        <input type="text" id="authRegdNo" placeholder="e.g. 2026DCEBT10001" autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label for="authAdmNo">2. Admission Number *</label>
+        <input type="text" id="authAdmNo" placeholder="e.g. VCO2601826" autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label for="authSection">3. Section *</label>
+        <select id="authSection">
+          <option value="">-- Select Section --</option>
+          <option value="CIV-1">CIV-1</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+        </select>
+      </div>
+
+      <button id="authBtn" class="btn btn-primary" onclick="handleAuthVerification()">Verify & Proceed</button>
+    </section>
+
+    <!-- ================= STAGE 2: ADMISSION DETAILS & UPLOADS ================= -->
+    <section id="formCard" class="card form-card" style="display: none;">
+
+      <!-- Section 1: Admission & Academic Identity -->
+      <div class="section-title">1. Admission & Academic Identity</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Enrollment Number *</label>
+          <input type="text" id="fieldEnrollmentNo" readonly class="readonly-input">
+        </div>
+        <div class="form-group">
+          <label>Admission Number *</label>
+          <input type="text" id="fieldAdmissionNo" readonly class="readonly-input">
+        </div>
+        <div class="form-group">
+          <label>Programme Admitted *</label>
+          <select id="fieldProgramme">
+            <option value="CSE (Artificial Intelligence & Machine Learning)">CSE (Artificial Intelligence & Machine Learning)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Programme Section *</label>
+          <input type="text" id="fieldSection" readonly class="readonly-input">
+        </div>
+        <div class="form-group">
+          <label>Type of Admission *</label>
+          <select id="fieldAdmissionType">
+            <option value="APEACET Convenor">APEACET Convenor</option>
+            <option value="VVIT University">VVIT University</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>VVITU App No. / APEAPCET H.T. No. *</label>
+          <input type="text" id="fieldRankHtNo" placeholder="Enter Hall Ticket / Application No.">
+        </div>
+        <div class="form-group">
+          <label>Eligible for State Govt. Fee Reimbursement? *</label>
+          <select id="fieldFeeReimb">
+            <option value="YES">YES</option>
+            <option value="NO">NO</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ABC ID (APAAR ID)</label>
+          <input type="text" id="fieldApaarId" placeholder="Optional 12-digit APAAR ID">
+        </div>
+      </div>
+
+      <!-- Section 2: Student Personal Profile -->
+      <div class="section-title">2. Student Personal Profile</div>
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label>Name of the Student (As per SSC, CBSE, ICSE) *</label>
+          <input type="text" id="fieldNameSsc" placeholder="Full name matching matriculation certificate">
+        </div>
+        <div class="form-group">
+          <label>Gender *</label>
+          <select id="fieldGender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date of Birth (as per SSC) *</label>
+          <input type="date" id="fieldDob">
+        </div>
+        <div class="form-group">
+          <label>Blood Group *</label>
+          <select id="fieldBloodGroup">
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Social Category *</label>
+          <select id="fieldCategory">
+            <option value="OC">OC</option>
+            <option value="BC-A">BC-A</option>
+            <option value="BC-B">BC-B</option>
+            <option value="BC-C">BC-C</option>
+            <option value="BC-D">BC-D</option>
+            <option value="BC-E">BC-E</option>
+            <option value="SC">SC</option>
+            <option value="ST">ST</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Caste *</label>
+          <input type="text" id="fieldCaste" placeholder="e.g. Kapu, Reddy, Kamma, Madiga, etc.">
+        </div>
+        <div class="form-group">
+          <label>Student Mobile Number *</label>
+          <input type="tel" id="fieldStudentMobile" maxlength="10" placeholder="10-digit mobile">
+        </div>
+        <div class="form-group">
+          <label>Student Email ID *</label>
+          <input type="email" id="fieldStudentEmail" placeholder="student@example.com">
+        </div>
+        <div class="form-group">
+          <label>Student Aadhaar Number *</label>
+          <input type="password" id="fieldStudentAadhaar" maxlength="12" placeholder="12-digit Aadhaar">
+        </div>
+        <div class="form-group">
+          <label>Identification Mark 1 (Moles as per SSC) *</label>
+          <input type="text" id="fieldIdMark1" placeholder="e.g. A mole on right shoulder">
+        </div>
+        <div class="form-group">
+          <label>Identification Mark 2 (Moles as per SSC) *</label>
+          <input type="text" id="fieldIdMark2" placeholder="e.g. A mole below left eye">
+        </div>
+      </div>
+
+      <!-- Section 3: Educational Qualifications -->
+      <div class="section-title">3. Educational Qualifications</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>SSC / 10th Regd. Number *</label>
+          <input type="text" id="fieldSscRegd" placeholder="Hall Ticket No">
+        </div>
+        <div class="form-group">
+          <label>SSC Total Marks *</label>
+          <input type="number" id="fieldSscMarks" placeholder="e.g. 580">
+        </div>
+        <div class="form-group">
+          <label>SSC Percentage / GPA *</label>
+          <input type="text" id="fieldSscPercent" placeholder="e.g. 96.5% or 9.8">
+        </div>
+        <div class="form-group">
+          <label>Intermediate / Diploma Regd. Number *</label>
+          <input type="text" id="fieldInterRegd" placeholder="Hall Ticket No">
+        </div>
+        <div class="form-group">
+          <label>Intermediate Total Marks *</label>
+          <input type="number" id="fieldInterMarks" placeholder="e.g. 972">
+        </div>
+        <div class="form-group">
+          <label>Intermediate Percentage *</label>
+          <input type="text" id="fieldInterPercent" placeholder="e.g. 97.2%">
+        </div>
+      </div>
+
+      <!-- Section 4: Parent & Guardian Details -->
+      <div class="section-title">4. Parent / Guardian Details</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Father Name (As per SSC) *</label>
+          <input type="text" id="fieldFatherName">
+        </div>
+        <div class="form-group">
+          <label>Father Mobile Number *</label>
+          <input type="tel" id="fieldFatherMobile" maxlength="10">
+        </div>
+        <div class="form-group">
+          <label>Father Occupation *</label>
+          <input type="text" id="fieldFatherOcc">
+        </div>
+        <div class="form-group">
+          <label>Father Aadhaar Number *</label>
+          <input type="password" id="fieldFatherAadhaar" maxlength="12" placeholder="12-digit Aadhaar">
+        </div>
+        <div class="form-group">
+          <label>Mother Name (As per SSC) *</label>
+          <input type="text" id="fieldMotherName">
+        </div>
+        <div class="form-group">
+          <label>Mother Mobile Number *</label>
+          <input type="tel" id="fieldMotherMobile" maxlength="10">
+        </div>
+        <div class="form-group">
+          <label>Mother Occupation *</label>
+          <input type="text" id="fieldMotherOcc">
+        </div>
+        <div class="form-group">
+          <label>Mother Aadhaar Number *</label>
+          <input type="password" id="fieldMotherAadhaar" maxlength="12" placeholder="12-digit Aadhaar">
+        </div>
+      </div>
+
+      <!-- Section 5: Address Details -->
+      <div class="section-title">5. Address Details</div>
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label>Permanent Address *</label>
+          <input type="text" id="fieldPermAddress" placeholder="House/Flat No, Street, Village/Town">
+        </div>
+        <div class="form-group">
+          <label>Permanent District *</label>
+          <input type="text" id="fieldPermDistrict">
+        </div>
+        <div class="form-group">
+          <label>Permanent State *</label>
+          <select id="fieldPermState">
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Permanent Pincode *</label>
+          <input type="text" id="fieldPermPincode" maxlength="6">
+        </div>
+
+        <div class="form-group full-width sync-checkbox-row">
+          <input type="checkbox" id="syncAddressCheck" onchange="handleAddressSync()">
+          <label for="syncAddressCheck">Current Address is same as Permanent Address</label>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Current / Present Address *</label>
+          <input type="text" id="fieldCurrAddress" placeholder="House/Flat No, Street, Village/Town">
+        </div>
+        <div class="form-group">
+          <label>Current District *</label>
+          <input type="text" id="fieldCurrDistrict">
+        </div>
+        <div class="form-group">
+          <label>Current Pincode *</label>
+          <input type="text" id="fieldCurrPincode" maxlength="6">
+        </div>
+      </div>
+
+      <!-- Section 6: Campus Life & Logistics -->
+      <div class="section-title">6. Campus Life & Logistics</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Co-Curricular Interests *</label>
+          <select id="fieldCoCurricular">
+            <option value="Clubs">Clubs</option>
+            <option value="Sports">Sports</option>
+            <option value="Not Interested">Not Interested</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>NCC / NSS Enrollment *</label>
+          <select id="fieldNccNss">
+            <option value="NCC">NCC</option>
+            <option value="NSS">NSS</option>
+            <option value="Not Interested">Not Interested</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Current Residential Status *</label>
+          <select id="fieldResidentialStatus" onchange="handleResidenceChange()">
+            <option value="Dayscholar">Dayscholar</option>
+            <option value="VVIT University Hostel">VVIT University Hostel</option>
+          </select>
+        </div>
+
+        <!-- Conditional: Hostel Sharing -->
+        <div class="form-group" id="hostelGroup" style="display: none;">
+          <label>VVITU Hostel Sharing *</label>
+          <select id="fieldHostelSharing">
+            <option value="4">4 Sharing</option>
+            <option value="8">8 Sharing</option>
+          </select>
+        </div>
+
+        <!-- Conditional: Dayscholar Mode -->
+        <div class="form-group" id="commuteGroup">
+          <label>How do you come to college? *</label>
+          <select id="fieldCommuteMode" onchange="handleCommuteChange()">
+            <option value="Bus">College Bus</option>
+            <option value="Local">Local (Own Transport)</option>
+          </select>
+        </div>
+
+        <!-- Conditional: 80+ Bus Boarding Stops Dropdown -->
+        <div class="form-group full-width" id="busStopGroup">
+          <label>Bus Boarding Place *</label>
+          <select id="fieldBusStop">
+            <option value="">-- Choose Boarding Stop --</option>
+            <optgroup label="Amaravathi & Environs">
+              <option value="Amaravathi">Amaravathi</option>
+              <option value="Pedaparimi">Pedaparimi</option>
+              <option value="Thulluru">Thulluru</option>
+              <option value="Namburu">Namburu</option>
+              <option value="Chowdavaram">Chowdavaram</option>
+              <option value="Lal Puram">Lal Puram</option>
+            </optgroup>
+            <optgroup label="Guntur Routes">
+              <option value="SVN Colony-GNT">SVN Colony-GNT</option>
+              <option value="Gujjangundla-GNT">Gujjangundla-GNT</option>
+              <option value="Potthuru-GNT">Potthuru-GNT</option>
+              <option value="SriRam Township-GNT">SriRam Township-GNT</option>
+              <option value="Hanumaiah Circle/LIC Colony-GNT">Hanumaiah Circle/LIC Colony-GNT</option>
+              <option value="Stambalagaruvu-GNT">Stambalagaruvu-GNT</option>
+              <option value="RTO Office (Old)-GNT">RTO Office (Old)-GNT</option>
+              <option value="Pattabhipuram Petrol Bunk-GNT">Pattabhipuram Petrol Bunk-GNT</option>
+              <option value="Syamala Nagar-GNT">Syamala Nagar-GNT</option>
+              <option value="Recruitment Office-GNT">Recruitment Office-GNT</option>
+              <option value="Swamy Theatre-GNT">Swamy Theatre-GNT</option>
+              <option value="Collector Office-GNT">Collector Office-GNT</option>
+              <option value="Nagarampalem-GNT">Nagarampalem-GNT</option>
+              <option value="Stall Girls High School-GNT">Stall Girls High School-GNT</option>
+              <option value="Bommidala Kalyana Mandapam-GNT">Bommidala Kalyana Mandapam-GNT</option>
+              <option value="Navabharath Nagar-GNT">Navabharath Nagar-GNT</option>
+              <option value="Vidya Nagar 1st Line-GNT">Vidya Nagar 1st Line-GNT</option>
+              <option value="Saibaba Road-GNT">Saibaba Road-GNT</option>
+              <option value="Koritepadu Kollaform-GNT">Koritepadu Kollaform-GNT</option>
+              <option value="Gandhi Bomma-GNT">Gandhi Bomma-GNT</option>
+              <option value="Rajendra Nagar-GNT">Rajendra Nagar-GNT</option>
+              <option value="Brundavan Gardens-GNT">Brundavan Gardens-GNT</option>
+              <option value="Sitaramaiah High School-GNT">Sitaramaiah High School-GNT</option>
+              <option value="Nayar Hotal -GNT">Nayar Hotal -GNT</option>
+              <option value="Bakers Fun-GNT">Bakers Fun-GNT</option>
+              <option value="Lakshmipuram Milk Booth-GNT">Lakshmipuram Milk Booth-GNT</option>
+              <option value="Union Bank-GNT">Union Bank-GNT</option>
+              <option value="Housing Board Colony (Janatha Bazar)-GNT">Housing Board Colony (Janatha Bazar)-GNT</option>
+              <option value="Mahatma Gandhi College-GNT">Mahatma Gandhi College-GNT</option>
+              <option value="A T Agraharam-GNT">A T Agraharam-GNT</option>
+              <option value="Chuttugunta-GNT">Chuttugunta-GNT</option>
+              <option value="ITC-GNT">ITC-GNT</option>
+              <option value="Vijaya Lakshmi Theatre-GNT">Vijaya Lakshmi Theatre-GNT</option>
+              <option value="Venkateswara Swamy Temple(Gorantla)-GNT">Venkateswara Swamy Temple(Gorantla)-GNT</option>
+              <option value="Nagaralu-GNT">Nagaralu-GNT</option>
+              <option value="Medical College Hostel-GNT">Medical College Hostel-GNT</option>
+              <option value="Rama Buildings-GNT">Rama Buildings-GNT</option>
+              <option value="Lodge Centre-GNT">Lodge Centre-GNT</option>
+              <option value="Sankar Vilas-GNT">Sankar Vilas-GNT</option>
+              <option value="Naaz Centre-GNT">Naaz Centre-GNT</option>
+              <option value="Kothapet (Bhagathsing Bomma)-GNT">Kothapet (Bhagathsing Bomma)-GNT</option>
+              <option value="Bose Bomma-GNT">Bose Bomma-GNT</option>
+              <option value="Old Club Road (Opp. Bus Stand)-GNT">Old Club Road (Opp. Bus Stand)-GNT</option>
+              <option value="Market-GNT">Market-GNT</option>
+              <option value="Old Bus Stand -GNT">Old Bus Stand -GNT</option>
+              <option value="B. R. Stadium-GNT">B. R. Stadium-GNT</option>
+              <option value="Mani Hotel Centre (Old Guntur)">Mani Hotel Centre (Old Guntur)</option>
+              <option value="Bus Stand-GNT">Bus Stand-GNT</option>
+              <option value="Manipuram Gate-GNT">Manipuram Gate-GNT</option>
+              <option value="Ammavari Temple -GNT">Ammavari Temple -GNT</option>
+              <option value="Auto Nagar-GNT">Auto Nagar-GNT</option>
+            </optgroup>
+            <optgroup label="Vijayawada Routes">
+              <option value="Foundary centre -VJW">Foundary centre -VJW</option>
+              <option value="Bhavanipuram -VJW">Bhavanipuram -VJW</option>
+              <option value="Vijaya Takies (Eluru Road)-VJW">Vijaya Takies (Eluru Road)-VJW</option>
+              <option value="Chuttugunta-VJW">Chuttugunta-VJW</option>
+              <option value="Veternary Hospital-VJW">Veternary Hospital-VJW</option>
+              <option value="Benz Circle-VJW">Benz Circle-VJW</option>
+              <option value="Varadhi-VJW">Varadhi-VJW</option>
+              <option value="Tadepalli">Tadepalli</option>
+            </optgroup>
+            <optgroup label="Mangalagiri Points">
+              <option value="China Kakani">China Kakani</option>
+              <option value="Kaza">Kaza</option>
+              <option value="Mangalagiri Bypass">Mangalagiri Bypass</option>
+              <option value="MGL Rajive Centre">MGL Rajive Centre</option>
+              <option value="MGL Galigopuram">MGL Galigopuram</option>
+              <option value="MGL Bus Stand">MGL Bus Stand</option>
+              <option value="MGL Old Bus Stand">MGL Old Bus Stand</option>
+              <option value="MGL Anjaneya Swamy Temple">MGL Anjaneya Swamy Temple</option>
+              <option value="Yarrabalem">Yarrabalem</option>
+            </optgroup>
+            <optgroup label="Tenali, Chebrolu & Rural Regions">
+              <option value="Tenali">Tenali</option>
+              <option value="Halfpeta">Halfpeta</option>
+              <option value="Kolakaluru">Kolakaluru</option>
+              <option value="Nandivelugu">Nandivelugu</option>
+              <option value="Kollipara">Kollipara</option>
+              <option value="Takkellapadu">Takkellapadu</option>
+              <option value="Kolluru (44KM)">Kolluru (44KM)</option>
+              <option value="Revendrapadu">Revendrapadu</option>
+              <option value="Tummapudi">Tummapudi</option>
+              <option value="Nuthakki">Nuthakki</option>
+              <option value="Peda Vadlapudi">Peda Vadlapudi</option>
+              <option value="Duggirala">Duggirala</option>
+              <option value="Etukuru">Etukuru</option>
+              <option value="Tadikonda">Tadikonda</option>
+              <option value="Lam">Lam</option>
+              <option value="Peda Kakani">Peda Kakani</option>
+              <option value="Pedanandi Padu">Pedanandi Padu</option>
+              <option value="Prathipadu">Prathipadu</option>
+              <option value="Pulladigunta">Pulladigunta</option>
+              <option value="Kantheru">Kantheru</option>
+              <option value="Narakoduru">Narakoduru</option>
+              <option value="Yadlapadu">Yadlapadu</option>
+              <option value="Kantheru 'X' Road">Kantheru 'X' Road</option>
+              <option value="Uppalapadu">Uppalapadu</option>
+              <option value="Venkata Krishna Puram">Venkata Krishna Puram</option>
+              <option value="Cherukupalli">Cherukupalli</option>
+              <option value="Ibrahimpatnam">Ibrahimpatnam</option>
+              <option value="Sattenapalli">Sattenapalli</option>
+              <option value="Penamaluru">Penamaluru</option>
+              <option value="Narasaraopet">Narasaraopet</option>
+              <option value="Peda Palakaluru">Peda Palakaluru</option>
+              <option value="Ponnur">Ponnur</option>
+              <option value="Chebrolu">Chebrolu</option>
+              <option value="Budampadu">Budampadu</option>
+              <option value="Raveli Via Ponnekallu">Raveli Via Ponnekallu</option>
+              <option value="Sekuru Via Narakoduru">Sekuru Via Narakoduru</option>
+              <option value="Chiluvuru">Chiluvuru</option>
+              <option value="Koppuravuru">Koppuravuru</option>
+              <option value="Nunna">Nunna</option>
+              <option value="Gannavaram">Gannavaram</option>
+              <option value="Bapatla">Bapatla</option>
+              <option value="Chilakaluripet (54KM)">Chilakaluripet (54KM)</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section 7: File Uploads & Automatic Card Synthesis -->
+      <div class="section-title">7. Photograph & Signature Upload</div>
+      <div class="upload-container-grid">
+        <div class="upload-tile">
+          <label>1. Passport Size Photo (<= 35 KB)</label>
+          <input type="file" id="filePhoto" accept="image/*" onchange="processSelectedImage(event, 'photo')">
+          <div id="photoSizeTag" class="size-tag">No file chosen</div>
+          <img id="photoThumb" class="thumb-preview" alt="Photo Preview">
+        </div>
+
+        <div class="upload-tile">
+          <label>2. Signature Strip (<= 15 KB)</label>
+          <input type="file" id="fileSign" accept="image/*" onchange="processSelectedImage(event, 'sign')">
+          <div id="signSizeTag" class="size-tag">No file chosen</div>
+          <img id="signThumb" class="thumb-preview" alt="Sign Preview">
+        </div>
+
+        <div class="upload-tile combined-tile">
+          <label>3. Merged Passport Card (31–34 KB)</label>
+          <div class="hint-text">Auto-generated composite card (3.5 × 4.5 cm ratio)</div>
+          <img id="combinedThumb" class="thumb-preview-card" alt="Combined Card">
+          <div id="combinedSizeTag" class="size-tag-bold">Pending uploads</div>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <button class="btn btn-secondary" onclick="generateAndShowA4Preview()">Review & Preview A4 Application</button>
+      </div>
+
+    </section>
+
+    <!-- ================= STAGE 3: A4 SUMMARY PREVIEW & PRINT ================= -->
+    <section id="previewCard" class="card preview-container" style="display: none;">
+      <div class="screen-notice">
+        <b>Document Preview:</b> Review all printed fields below. Click <b>Confirm & Submit</b> to save to Google Drive and log your entry.
+      </div>
+
+      <!-- Strict A4 Paged Paper Shell -->
+      <div id="a4PrintSheet" class="a4-sheet">
+        <div class="print-header">
+          <div class="p-title">VASIREDDY VENKATADRI INTERNATIONAL TECHNOLOGICAL UNIVERSITY</div>
+          <div class="p-sub">STUDENT REGISTRATION & ENROLLMENT RECORD — 2026</div>
+        </div>
+
+        <div class="preview-two-col">
+          <div class="col-main">
+            <div class="p-sect">1. Admission Identity</div>
+            <table class="p-table">
+              <tr>
+                <td class="lbl">Enrollment No:</td><td class="val"><b id="pEnrollmentNo"></b></td>
+                <td class="lbl">Admission No:</td><td class="val" id="pAdmissionNo"></td>
+              </tr>
+              <tr>
+                <td class="lbl">Programme:</td><td class="val" id="pProgramme"></td>
+                <td class="lbl">Section:</td><td class="val" id="pSection"></td>
+              </tr>
+              <tr>
+                <td class="lbl">Admission Type:</td><td class="val" id="pAdmissionType"></td>
+                <td class="lbl">Rank / HT No:</td><td class="val" id="pRankHtNo"></td>
+              </tr>
+              <tr>
+                <td class="lbl">Fee Reimbursement:</td><td class="val" id="pFeeReimb"></td>
+                <td class="lbl">APAAR / ABC ID:</td><td class="val" id="pApaarId"></td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-card">
+            <img id="pCombinedCardImg" class="p-card-img" alt="Student Card">
+          </div>
+        </div>
+
+        <div class="p-sect">2. Personal Information</div>
+        <table class="p-table">
+          <tr>
+            <td class="lbl">Full Name (SSC):</td><td class="val" colspan="3"><b id="pNameSsc"></b></td>
+          </tr>
+          <tr>
+            <td class="lbl">Gender:</td><td class="val" id="pGender"></td>
+            <td class="lbl">Date of Birth:</td><td class="val" id="pDob"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Blood Group:</td><td class="val" id="pBloodGroup"></td>
+            <td class="lbl">Mobile Number:</td><td class="val" id="pStudentMobile"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Email Address:</td><td class="val" id="pStudentEmail"></td>
+            <td class="lbl">Category / Caste:</td><td class="val" id="pCategoryCaste"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Identification Mark 1:</td><td class="val" colspan="3" id="pIdMark1"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Identification Mark 2:</td><td class="val" colspan="3" id="pIdMark2"></td>
+          </tr>
+        </table>
+
+        <div class="p-sect">3. Educational Qualifications</div>
+        <table class="p-table">
+          <tr>
+            <td class="lbl">SSC / 10th Regd:</td><td class="val" id="pSscRegd"></td>
+            <td class="lbl">Marks / %:</td><td class="val" id="pSscMarks"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Inter / Dip. Regd:</td><td class="val" id="pInterRegd"></td>
+            <td class="lbl">Marks / %:</td><td class="val" id="pInterMarks"></td>
+          </tr>
+        </table>
+
+        <div class="p-sect">4. Parent / Guardian Details</div>
+        <table class="p-table">
+          <tr>
+            <td class="lbl">Father Name:</td><td class="val" id="pFatherName"></td>
+            <td class="lbl">Father Mobile:</td><td class="val" id="pFatherMobile"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Father Occupation:</td><td class="val" colspan="3" id="pFatherOcc"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Mother Name:</td><td class="val" id="pMotherName"></td>
+            <td class="lbl">Mother Mobile:</td><td class="val" id="pMotherMobile"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Mother Occupation:</td><td class="val" colspan="3" id="pMotherOcc"></td>
+          </tr>
+        </table>
+
+        <div class="p-sect">5. Residence & Campus Logistics</div>
+        <table class="p-table">
+          <tr>
+            <td class="lbl">Permanent Address:</td><td class="val" colspan="3" id="pPermAddress"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Current Address:</td><td class="val" colspan="3" id="pCurrAddress"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Residential Status:</td><td class="val" id="pResStatus"></td>
+            <td class="lbl">Hostel / Boarding:</td><td class="val" id="pLogisticsPoint"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Co-Curricular:</td><td class="val" id="pCoCurricular"></td>
+            <td class="lbl">NCC / NSS:</td><td class="val" id="pNccNss"></td>
+          </tr>
+        </table>
+
+        <div class="p-declaration">
+          <b>Student Declaration:</b> I hereby declare that all information furnished in this application is true, complete, and accurate. In the event of any discrepancies, my admission remains liable to institutional regulations.
+        </div>
+      </div>
+
+      <div class="preview-actions">
+        <button class="btn btn-outline" onclick="closePreviewToEdit()">← Back to Edit</button>
+        <button id="finalSubmitBtn" class="btn btn-primary" onclick="submitApplicationToCloud()">Confirm & Submit Application</button>
+      </div>
+
+      <div id="submissionStatus" class="submission-status" style="display:none;"></div>
+      <div id="postSubmitActions" class="post-actions" style="display:none;">
+        <button class="btn btn-primary" onclick="window.print()">Print A4 Form / Save PDF</button>
+        <a id="drivePdfLink" href="#" target="_blank" class="btn btn-outline">View Cloud Backup PDF</a>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
 
