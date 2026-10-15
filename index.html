@@ -33,27 +33,95 @@
         <input type="text" id="authRegdNo" placeholder="e.g. 2026DCEBT10001" autocomplete="off">
       </div>
 
-      <div class="form-group">
-        <label for="authAdmNo">2. Admission Number *</label>
-        <input type="text" id="authAdmNo" placeholder="e.g. VCO2601826" autocomplete="off">
-      </div>
-
-      <div class="form-group">
+            <div class="form-group">
         <label for="authSection">3. Section *</label>
         <select id="authSection">
           <option value="">-- Select Section --</option>
-          <option value="CIV-1">CIV-1</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
+          <optgroup label="Civil Engineering">
+            <option value="CIV-1">CIV-1</option>
+            <option value="CIV-2">CIV-2</option>
+            <option value="CIV-3">CIV-3</option>
+          </optgroup>
+          <optgroup label="Electrical & Electronics (EEE)">
+            <option value="EEE-1">EEE-1</option>
+            <option value="EEE-2">EEE-2</option>
+            <option value="EEE-3">EEE-3</option>
+          </optgroup>
+          <optgroup label="Mechanical Engineering (MEC)">
+            <option value="MEC-1">MEC-1</option>
+            <option value="MEC-2">MEC-2</option>
+            <option value="MEC-3">MEC-3</option>
+          </optgroup>
+          <optgroup label="Electronics & Communication (ECE)">
+            <option value="ECE-1">ECE-1</option>
+            <option value="ECE-2">ECE-2</option>
+            <option value="ECE-3">ECE-3</option>
+            <option value="ECE-4">ECE-4</option>
+            <option value="ECE-5">ECE-5</option>
+            <option value="ECE-6">ECE-6</option>
+          </optgroup>
+          <optgroup label="Computer Science & Engineering (CSE)">
+            <option value="CSE-1">CSE-1</option>
+            <option value="CSE-2">CSE-2</option>
+            <option value="CSE-3">CSE-3</option>
+            <option value="CSE-4">CSE-4</option>
+            <option value="CSE-5">CSE-5</option>
+            <option value="CSE-6">CSE-6</option>
+            <option value="CSE-7">CSE-7</option>
+            <option value="CSE-8">CSE-8</option>
+            <option value="CSE-9">CSE-9</option>
+            <option value="CSE-10">CSE-10</option>
+            <option value="CSE-11">CSE-11</option>
+          </optgroup>
+          <optgroup label="Computer Science - Data Science (CAD)">
+            <option value="CAD-1">CAD-1</option>
+            <option value="CAD-2">CAD-2</option>
+            <option value="CAD-3">CAD-3</option>
+            <option value="CAD-4">CAD-4</option>
+            <option value="CAD-5">CAD-5</option>
+            <option value="CAD-6">CAD-6</option>
+            <option value="CAD-7">CAD-7</option>
+            <option value="CAD-8">CAD-8</option>
+          </optgroup>
+          <optgroup label="Computer Science - IoT & Cyber Security (CIC)">
+            <option value="CIC-1">CIC-1</option>
+            <option value="CIC-2">CIC-2</option>
+            <option value="CIC-3">CIC-3</option>
+            <option value="CIC-4">CIC-4</option>
+            <option value="CIC-5">CIC-5</option>
+          </optgroup>
+          <optgroup label="Computer Science - AI & ML (CSM)">
+            <option value="CSM-1">CSM-1</option>
+            <option value="CSM-2">CSM-2</option>
+            <option value="CSM-3">CSM-3</option>
+            <option value="CSM-4">CSM-4</option>
+            <option value="CSM-5">CSM-5</option>
+            <option value="CSM-6">CSM-6</option>
+            <option value="CSM-7">CSM-7</option>
+            <option value="CSM-8">CSM-8</option>
+            <option value="CSM-9">CSM-9</option>
+            <option value="CSM-10">CSM-10</option>
+            <option value="CSM-11">CSM-11</option>
+            <option value="CSM-12">CSM-12</option>
+            <option value="CSM-13">CSM-13</option>
+            <option value="CSM-14">CSM-14</option>
+            <option value="CSM-15">CSM-15</option>
+            <option value="CSM-16">CSM-16</option>
+            <option value="CSM-17">CSM-17</option>
+            <option value="CSM-18">CSM-18</option>
+            <option value="CSM-19">CSM-19</option>
+            <option value="CSM-20">CSM-20</option>
+            <option value="CSM-21">CSM-21</option>
+            <option value="CSM-22">CSM-22</option>
+            <option value="CSM-23">CSM-23</option>
+          </optgroup>
+          <optgroup label="Management Studies (BBA & MBA)">
+            <option value="BBA-1">BBA-1</option>
+            <option value="BBA-2">BBA-2</option>
+            <option value="MBA-1">MBA-1</option>
+          </optgroup>
         </select>
       </div>
-
       <button id="authBtn" class="btn btn-primary" onclick="handleAuthVerification()">Verify & Proceed</button>
     </section>
 
