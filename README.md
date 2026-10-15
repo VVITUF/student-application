@@ -1,0 +1,2 @@
+# student-application
+STUDENTS CAN SUBMIT THEIR DETAILS
