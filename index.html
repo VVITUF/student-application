@@ -33,7 +33,12 @@
         <input type="text" id="authRegdNo" placeholder="e.g. 2026DCEBT10001" autocomplete="off">
       </div>
 
-            <div class="form-group">
+      <div class="form-group">
+        <label for="authAdmNo">2. Admission Number *</label>
+        <input type="text" id="authAdmNo" placeholder="e.g. VCO2601826" autocomplete="off">
+      </div>
+
+      <div class="form-group">
         <label for="authSection">3. Section *</label>
         <select id="authSection">
           <option value="">-- Select Section --</option>
@@ -122,6 +127,7 @@
           </optgroup>
         </select>
       </div>
+
       <button id="authBtn" class="btn btn-primary" onclick="handleAuthVerification()">Verify & Proceed</button>
     </section>
 
@@ -698,4 +704,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
