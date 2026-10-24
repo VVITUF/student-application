@@ -380,7 +380,7 @@ function generateAndShowA4Preview() {
   document.getElementById("pStudentEmail").innerText = document.getElementById("fieldStudentEmail").value;
   document.getElementById("pCategoryCaste").innerText = `${document.getElementById("fieldCategory").value} (${document.getElementById("fieldCaste").value || "N/A"})`;
   
-  // Explicitly render identity numbers in Preview
+  // Render identity numbers in preview
   document.getElementById("pStudentAadhaar").innerText = document.getElementById("fieldStudentAadhaar").value.trim();
   document.getElementById("pIdMark1").innerText = document.getElementById("fieldIdMark1").value || "N/A";
   document.getElementById("pIdMark2").innerText = document.getElementById("fieldIdMark2").value || "N/A";
