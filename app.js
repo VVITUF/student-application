@@ -47,6 +47,9 @@ async function handleAuthVerification() {
       document.getElementById("fieldEnrollmentNo").value = data.regdNo;
       document.getElementById("fieldAdmissionNo").value = data.admissionNo;
       document.getElementById("fieldSection").value = data.section;
+      if (data.officialName) {
+        document.getElementById("fieldNameSsc").value = data.officialName;
+      }
 
       // Populate previous fields if editing
       if (data.isExisting && data.previousData) {
@@ -391,7 +394,7 @@ async function submitApplicationToCloud() {
     caste: document.getElementById("fieldCaste").value,
     studentMobile: document.getElementById("fieldStudentMobile").value,
     studentEmail: document.getElementById("fieldStudentEmail").value,
-    studentAadhaar: document.getElementById("fieldStudentAadhaar").value ? "[Aadhaar Redacted]" : "",
+    studentAadhaar: document.getElementById("fieldStudentAadhaar").value.trim(),
     identificationMark1: document.getElementById("fieldIdMark1").value,
     identificationMark2: document.getElementById("fieldIdMark2").value,
 
@@ -405,11 +408,11 @@ async function submitApplicationToCloud() {
     fatherName: document.getElementById("fieldFatherName").value,
     fatherMobile: document.getElementById("fieldFatherMobile").value,
     fatherOccupation: document.getElementById("fieldFatherOcc").value,
-    fatherAadhaar: document.getElementById("fieldFatherAadhaar").value ? "[Aadhaar Redacted]" : "",
+    fatherAadhaar: document.getElementById("fieldFatherAadhaar").value.trim(),
     motherName: document.getElementById("fieldMotherName").value,
     motherMobile: document.getElementById("fieldMotherMobile").value,
     motherOccupation: document.getElementById("fieldMotherOcc").value,
-    motherAadhaar: document.getElementById("fieldMotherAadhaar").value ? "[Aadhaar Redacted]" : "",
+    motherAadhaar: document.getElementById("fieldMotherAadhaar").value.trim(),
 
     permanentAddress: document.getElementById("fieldPermAddress").value,
     permanentDistrict: document.getElementById("fieldPermDistrict").value,
@@ -460,4 +463,3 @@ async function submitApplicationToCloud() {
     submitBtn.disabled = false;
   }
 }
-
