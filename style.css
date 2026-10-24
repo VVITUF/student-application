@@ -431,7 +431,7 @@ input:focus, select:focus {
     max-width: 100% !important;
   }
 
-  /* Pinned top-right image alignment in printed PDF */
+  /* Strict pinned top-right image alignment in desktop print / PDF */
   .top-composite-grid {
     display: flex !important;
     flex-direction: row !important;
