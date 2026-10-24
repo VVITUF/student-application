@@ -43,7 +43,7 @@ async function handleAuthVerification() {
       document.getElementById("welcomeNameText").innerText = `Welcome, ${data.officialName}`;
       welcomeBanner.style.display = "block";
 
-      // Pre-fill and lock verified credentials
+      // Pre-fill verified credentials
       document.getElementById("fieldEnrollmentNo").value = data.regdNo;
       document.getElementById("fieldAdmissionNo").value = data.admissionNo;
       document.getElementById("fieldSection").value = data.section;
@@ -51,7 +51,7 @@ async function handleAuthVerification() {
         document.getElementById("fieldNameSsc").value = data.officialName;
       }
 
-      // Populate previous fields if editing
+      // Populate previous fields if editing an existing record
       if (data.isExisting && data.previousData) {
         populateExistingForm(data.previousData);
       }
@@ -81,6 +81,7 @@ function populateExistingForm(d) {
   if (d.Caste) document.getElementById("fieldCaste").value = d.Caste;
   if (d.Student_Mobile) document.getElementById("fieldStudentMobile").value = d.Student_Mobile;
   if (d.Student_Email) document.getElementById("fieldStudentEmail").value = d.Student_Email;
+  if (d.Student_Aadhaar) document.getElementById("fieldStudentAadhaar").value = d.Student_Aadhaar;
   if (d.APAAR_ID) document.getElementById("fieldApaarId").value = d.APAAR_ID;
   if (d.Identification_Mark_1) document.getElementById("fieldIdMark1").value = d.Identification_Mark_1;
   if (d.Identification_Mark_2) document.getElementById("fieldIdMark2").value = d.Identification_Mark_2;
@@ -95,9 +96,11 @@ function populateExistingForm(d) {
   if (d.Father_Name) document.getElementById("fieldFatherName").value = d.Father_Name;
   if (d.Father_Mobile) document.getElementById("fieldFatherMobile").value = d.Father_Mobile;
   if (d.Father_Occupation) document.getElementById("fieldFatherOcc").value = d.Father_Occupation;
+  if (d.Father_Aadhaar) document.getElementById("fieldFatherAadhaar").value = d.Father_Aadhaar;
   if (d.Mother_Name) document.getElementById("fieldMotherName").value = d.Mother_Name;
   if (d.Mother_Mobile) document.getElementById("fieldMotherMobile").value = d.Mother_Mobile;
   if (d.Mother_Occupation) document.getElementById("fieldMotherOcc").value = d.Mother_Occupation;
+  if (d.Mother_Aadhaar) document.getElementById("fieldMotherAadhaar").value = d.Mother_Aadhaar;
 
   if (d.Permanent_Address) document.getElementById("fieldPermAddress").value = d.Permanent_Address;
   if (d.Permanent_District) document.getElementById("fieldPermDistrict").value = d.Permanent_District;
@@ -155,7 +158,7 @@ function handleResidenceChange() {
 function handleCommuteChange() {
   const mode = document.getElementById("fieldCommuteMode").value;
   const busGrp = document.getElementById("busStopGroup");
-  busGrp.style.display = mode === "Bus" ? "block" : "none";
+  busGrp.style.display = mode === "College Bus" ? "block" : "none";
 }
 
 // ================= CANVAS 30 KB IMAGE COMPRESSION & MERGING =================
@@ -302,8 +305,58 @@ function synthesizeCompositeCard() {
   document.getElementById("combinedSizeTag").innerText = `Passport-Size Card: ${getKbSize(combinedCardBase64)} KB (31–34 KB)`;
 }
 
-// ================= STAGE 3: A4 PREVIEW RENDERING =================
+// ================= STAGE 3: VALIDATION & A4 PREVIEW =================
+function validateIdentityInputs() {
+  const studentMobile = document.getElementById("fieldStudentMobile").value.trim();
+  const fatherMobile = document.getElementById("fieldFatherMobile").value.trim();
+  const motherMobile = document.getElementById("fieldMotherMobile").value.trim();
+
+  const studentAadhaar = document.getElementById("fieldStudentAadhaar").value.trim();
+  const fatherAadhaar = document.getElementById("fieldFatherAadhaar").value.trim();
+  const motherAadhaar = document.getElementById("fieldMotherAadhaar").value.trim();
+
+  // Validate 10-digit mobile numbers
+  if (!/^\d{10}$/.test(studentMobile)) {
+    alert("Error: Student Mobile Number must be exactly 10 numeric digits.");
+    document.getElementById("fieldStudentMobile").focus();
+    return false;
+  }
+  if (!/^\d{10}$/.test(fatherMobile)) {
+    alert("Error: Father's Mobile Number must be exactly 10 numeric digits.");
+    document.getElementById("fieldFatherMobile").focus();
+    return false;
+  }
+  if (motherMobile && !/^\d{10}$/.test(motherMobile)) {
+    alert("Error: Mother's Mobile Number must be exactly 10 numeric digits.");
+    document.getElementById("fieldMotherMobile").focus();
+    return false;
+  }
+
+  // Validate 12-digit identity numbers
+  if (!/^\d{12}$/.test(studentAadhaar)) {
+    alert("Error: Student Aadhaar Number must be exactly 12 numeric digits.");
+    document.getElementById("fieldStudentAadhaar").focus();
+    return false;
+  }
+  if (!/^\d{12}$/.test(fatherAadhaar)) {
+    alert("Error: Father's Aadhaar Number must be exactly 12 numeric digits.");
+    document.getElementById("fieldFatherAadhaar").focus();
+    return false;
+  }
+  if (!/^\d{12}$/.test(motherAadhaar)) {
+    alert("Error: Mother's Aadhaar Number must be exactly 12 numeric digits.");
+    document.getElementById("fieldMotherAadhaar").focus();
+    return false;
+  }
+
+  return true;
+}
+
 function generateAndShowA4Preview() {
+  if (!validateIdentityInputs()) {
+    return;
+  }
+
   if (!compressedPhotoBase64 || !compressedSignBase64 || !combinedCardBase64) {
     alert("Please upload both your Passport Photo and Signature before previewing.");
     return;
@@ -326,20 +379,26 @@ function generateAndShowA4Preview() {
   document.getElementById("pStudentMobile").innerText = document.getElementById("fieldStudentMobile").value;
   document.getElementById("pStudentEmail").innerText = document.getElementById("fieldStudentEmail").value;
   document.getElementById("pCategoryCaste").innerText = `${document.getElementById("fieldCategory").value} (${document.getElementById("fieldCaste").value || "N/A"})`;
+  
+  // Explicitly render identity numbers in Preview
+  document.getElementById("pStudentAadhaar").innerText = document.getElementById("fieldStudentAadhaar").value.trim();
   document.getElementById("pIdMark1").innerText = document.getElementById("fieldIdMark1").value || "N/A";
   document.getElementById("pIdMark2").innerText = document.getElementById("fieldIdMark2").value || "N/A";
 
   document.getElementById("pSscRegd").innerText = document.getElementById("fieldSscRegd").value;
-  document.getElementById("pSscMarks").innerText = `${document.getElementById("fieldSscMarks").value} (${document.getElementById("fieldSscPercent").value}%)`;
+  document.getElementById("pSscMarks").innerText = `${document.getElementById("fieldSscMarks").value} (${document.getElementById("fieldSscPercent").value})`;
   document.getElementById("pInterRegd").innerText = document.getElementById("fieldInterRegd").value;
-  document.getElementById("pInterMarks").innerText = `${document.getElementById("fieldInterMarks").value} (${document.getElementById("fieldInterPercent").value}%)`;
+  document.getElementById("pInterMarks").innerText = `${document.getElementById("fieldInterMarks").value} (${document.getElementById("fieldInterPercent").value})`;
 
   document.getElementById("pFatherName").innerText = document.getElementById("fieldFatherName").value;
   document.getElementById("pFatherMobile").innerText = document.getElementById("fieldFatherMobile").value;
   document.getElementById("pFatherOcc").innerText = document.getElementById("fieldFatherOcc").value || "N/A";
+  document.getElementById("pFatherAadhaar").innerText = document.getElementById("fieldFatherAadhaar").value.trim();
+  
   document.getElementById("pMotherName").innerText = document.getElementById("fieldMotherName").value;
-  document.getElementById("pMotherMobile").innerText = document.getElementById("fieldMotherMobile").value;
+  document.getElementById("pMotherMobile").innerText = document.getElementById("fieldMotherMobile").value || "N/A";
   document.getElementById("pMotherOcc").innerText = document.getElementById("fieldMotherOcc").value || "N/A";
+  document.getElementById("pMotherAadhaar").innerText = document.getElementById("fieldMotherAadhaar").value.trim();
 
   document.getElementById("pPermAddress").innerText = `${document.getElementById("fieldPermAddress").value}, Dist: ${document.getElementById("fieldPermDistrict").value}, ${document.getElementById("fieldPermState").value} - ${document.getElementById("fieldPermPincode").value}`;
   document.getElementById("pCurrAddress").innerText = `${document.getElementById("fieldCurrAddress").value}, Dist: ${document.getElementById("fieldCurrDistrict").value} - ${document.getElementById("fieldCurrPincode").value}`;
@@ -347,10 +406,10 @@ function generateAndShowA4Preview() {
   const resStatus = document.getElementById("fieldResidentialStatus").value;
   document.getElementById("pResStatus").innerText = resStatus;
   document.getElementById("pLogisticsPoint").innerText = resStatus === "VVIT University Hostel" 
-    ? `Hostel Sharing: ${document.getElementById("fieldHostelSharing").value}`
-    : (document.getElementById("fieldBusStop").value || "Local Transport");
+    ? `Hostel (${document.getElementById("fieldHostelSharing").value})`
+    : `${document.getElementById("fieldCommuteMode").value} - ${document.getElementById("fieldBusStop").value || "Local Commute"}`;
 
-  document.getElementById("pCoCurricular").innerText = document.getElementById("fieldCoCurricular").value;
+  document.getElementById("pCoCurricular").innerText = document.getElementById("fieldCoCurricular").value || "None";
   document.getElementById("pNccNss").innerText = document.getElementById("fieldNccNss").value;
 
   document.getElementById("pCombinedCardImg").src = combinedCardBase64;
@@ -374,60 +433,60 @@ async function submitApplicationToCloud() {
   submitBtn.disabled = true;
   statusEl.style.display = "block";
   statusEl.style.color = "#2563eb";
-  statusEl.innerText = "Submitting application and generating Drive PDF backup...";
+  statusEl.innerText = "Submitting application and generating university records...";
 
   const payload = {
-    enrollmentNo: document.getElementById("fieldEnrollmentNo").value,
-    admissionNo: document.getElementById("fieldAdmissionNo").value,
-    programmeAdmitted: document.getElementById("fieldProgramme").value,
-    programmeSection: document.getElementById("fieldSection").value,
-    admissionType: document.getElementById("fieldAdmissionType").value,
-    rankHtNo: document.getElementById("fieldRankHtNo").value,
-    feeReimbursement: document.getElementById("fieldFeeReimb").value,
-    apaarId: document.getElementById("fieldApaarId").value,
+    enrollmentNo: document.getElementById("fieldEnrollmentNo").value.trim(),
+    admissionNo: document.getElementById("fieldAdmissionNo").value.trim(),
+    programmeAdmitted: document.getElementById("fieldProgramme").value.trim(),
+    programmeSection: document.getElementById("fieldSection").value.trim(),
+    admissionType: document.getElementById("fieldAdmissionType").value.trim(),
+    rankHtNo: document.getElementById("fieldRankHtNo").value.trim(),
+    feeReimbursement: document.getElementById("fieldFeeReimb").value.trim(),
+    apaarId: document.getElementById("fieldApaarId").value.trim(),
 
-    studentNameSsc: document.getElementById("fieldNameSsc").value,
-    gender: document.getElementById("fieldGender").value,
-    dob: document.getElementById("fieldDob").value,
-    bloodGroup: document.getElementById("fieldBloodGroup").value,
-    category: document.getElementById("fieldCategory").value,
-    caste: document.getElementById("fieldCaste").value,
-    studentMobile: document.getElementById("fieldStudentMobile").value,
-    studentEmail: document.getElementById("fieldStudentEmail").value,
+    studentNameSsc: document.getElementById("fieldNameSsc").value.trim(),
+    gender: document.getElementById("fieldGender").value.trim(),
+    dob: document.getElementById("fieldDob").value.trim(),
+    bloodGroup: document.getElementById("fieldBloodGroup").value.trim(),
+    category: document.getElementById("fieldCategory").value.trim(),
+    caste: document.getElementById("fieldCaste").value.trim(),
+    studentMobile: document.getElementById("fieldStudentMobile").value.trim(),
+    studentEmail: document.getElementById("fieldStudentEmail").value.trim(),
     studentAadhaar: document.getElementById("fieldStudentAadhaar").value.trim(),
-    identificationMark1: document.getElementById("fieldIdMark1").value,
-    identificationMark2: document.getElementById("fieldIdMark2").value,
+    identificationMark1: document.getElementById("fieldIdMark1").value.trim(),
+    identificationMark2: document.getElementById("fieldIdMark2").value.trim(),
 
-    sscRegdNo: document.getElementById("fieldSscRegd").value,
-    sscMarks: document.getElementById("fieldSscMarks").value,
-    sscPercentage: document.getElementById("fieldSscPercent").value,
-    interRegdNo: document.getElementById("fieldInterRegd").value,
-    interMarks: document.getElementById("fieldInterMarks").value,
-    interPercentage: document.getElementById("fieldInterPercent").value,
+    sscRegdNo: document.getElementById("fieldSscRegd").value.trim(),
+    sscMarks: document.getElementById("fieldSscMarks").value.trim(),
+    sscPercentage: document.getElementById("fieldSscPercent").value.trim(),
+    interRegdNo: document.getElementById("fieldInterRegd").value.trim(),
+    interMarks: document.getElementById("fieldInterMarks").value.trim(),
+    interPercentage: document.getElementById("fieldInterPercent").value.trim(),
 
-    fatherName: document.getElementById("fieldFatherName").value,
-    fatherMobile: document.getElementById("fieldFatherMobile").value,
-    fatherOccupation: document.getElementById("fieldFatherOcc").value,
+    fatherName: document.getElementById("fieldFatherName").value.trim(),
+    fatherMobile: document.getElementById("fieldFatherMobile").value.trim(),
+    fatherOccupation: document.getElementById("fieldFatherOcc").value.trim(),
     fatherAadhaar: document.getElementById("fieldFatherAadhaar").value.trim(),
-    motherName: document.getElementById("fieldMotherName").value,
-    motherMobile: document.getElementById("fieldMotherMobile").value,
-    motherOccupation: document.getElementById("fieldMotherOcc").value,
+    motherName: document.getElementById("fieldMotherName").value.trim(),
+    motherMobile: document.getElementById("fieldMotherMobile").value.trim(),
+    motherOccupation: document.getElementById("fieldMotherOcc").value.trim(),
     motherAadhaar: document.getElementById("fieldMotherAadhaar").value.trim(),
 
-    permanentAddress: document.getElementById("fieldPermAddress").value,
-    permanentDistrict: document.getElementById("fieldPermDistrict").value,
-    permanentState: document.getElementById("fieldPermState").value,
-    permanentPincode: document.getElementById("fieldPermPincode").value,
-    currentAddress: document.getElementById("fieldCurrAddress").value,
-    currentDistrict: document.getElementById("fieldCurrDistrict").value,
-    currentPincode: document.getElementById("fieldCurrPincode").value,
+    permanentAddress: document.getElementById("fieldPermAddress").value.trim(),
+    permanentDistrict: document.getElementById("fieldPermDistrict").value.trim(),
+    permanentState: document.getElementById("fieldPermState").value.trim(),
+    permanentPincode: document.getElementById("fieldPermPincode").value.trim(),
+    currentAddress: document.getElementById("fieldCurrAddress").value.trim(),
+    currentDistrict: document.getElementById("fieldCurrDistrict").value.trim(),
+    currentPincode: document.getElementById("fieldCurrPincode").value.trim(),
 
-    coCurricular: document.getElementById("fieldCoCurricular").value,
-    nccNss: document.getElementById("fieldNccNss").value,
-    residentialStatus: document.getElementById("fieldResidentialStatus").value,
-    hostelSharing: document.getElementById("fieldHostelSharing").value,
-    collegeTravelMode: document.getElementById("fieldCommuteMode").value,
-    busBoardingPoint: document.getElementById("fieldBusStop").value,
+    coCurricular: document.getElementById("fieldCoCurricular").value.trim(),
+    nccNss: document.getElementById("fieldNccNss").value.trim(),
+    residentialStatus: document.getElementById("fieldResidentialStatus").value.trim(),
+    hostelSharing: document.getElementById("fieldHostelSharing").value.trim(),
+    collegeTravelMode: document.getElementById("fieldCommuteMode").value.trim(),
+    busBoardingPoint: document.getElementById("fieldBusStop").value.trim(),
 
     photo: compressedPhotoBase64,
     signature: compressedSignBase64,
@@ -449,7 +508,6 @@ async function submitApplicationToCloud() {
       document.querySelector(".screen-notice").style.display = "none";
       document.querySelector(".preview-actions button:first-child").style.display = "none";
 
-      document.getElementById("drivePdfLink").href = result.pdfUrl;
       postActions.style.display = "flex";
 
       // Trigger instant browser print dialog
