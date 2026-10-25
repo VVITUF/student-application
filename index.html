@@ -17,7 +17,7 @@
       </h3>
     </header>
 
-    <!-- STAGE 1: VERIFICATION CARD -->
+    <!-- ================= STAGE 1: VERIFICATION CARD ================= -->
     <div id="authCard" class="card auth-card-container">
       <div class="auth-stack">
         <div class="form-group">
@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <!-- STAGE 2: MAIN REGISTRATION FORM -->
+    <!-- ================= STAGE 2: MAIN REGISTRATION FORM ================= -->
     <div id="formCard" class="card" style="display: none;">
       
       <div id="welcomeBanner" class="welcome-box" style="display: none; margin-bottom: 20px;">
@@ -459,7 +459,7 @@
       </form>
     </div>
 
-    <!-- STAGE 3: A4 PREVIEW CARD -->
+    <!-- ================= STAGE 3: A4 PREVIEW CARD ================= -->
     <div id="previewCard" class="card" style="display: none;">
       <div class="preview-actions screen-notice" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
         <button type="button" class="btn btn-secondary" onclick="closePreviewToEdit()">← Back to Edit Form</button>
@@ -468,14 +468,18 @@
 
       <div id="submissionStatus" class="alert-box" style="display: none; margin-bottom: 16px;"></div>
 
-      <div id="postSubmitActions" class="post-actions" style="display: none;">
+      <div id="postSubmitActions" class="post-actions" style="display: none; gap: 14px; justify-content: center;">
         <button type="button" class="btn btn-primary" onclick="window.print()">Print Application Record</button>
+        <a id="downloadDrivePdfBtn" href="#" target="_blank" class="btn btn-success" style="display: none; text-decoration: none;">Download Official PDF (Drive)</a>
       </div>
 
       <div class="a4-document">
-        <div class="doc-header">
-          <div class="univ-title">VASIREDDY VENKATADRI INTERNATIONAL TECHNOLOGICAL UNIVERSITY</div>
-          <div class="doc-subtitle">STUDENT REGISTRATION & ENROLLMENT RECORD — 2026</div>
+        <div class="doc-header-wrap">
+          <div id="pMetaTimestamp" class="meta-timestamp"></div>
+          <div class="doc-header">
+            <div class="univ-title">VASIREDDY VENKATADRI INTERNATIONAL TECHNOLOGICAL UNIVERSITY</div>
+            <div class="doc-subtitle">STUDENT DETAILS</div>
+          </div>
         </div>
 
         <div class="top-composite-grid">
@@ -1324,7 +1328,8 @@
       document.getElementById("pStudentEmail").innerText = document.getElementById("fieldStudentEmail").value;
       document.getElementById("pCategoryCaste").innerText = `${document.getElementById("fieldCategory").value} (${document.getElementById("fieldCaste").value || "N/A"})`;
 
-      document.getElementById("pStudentAadhaar").innerText = document.getElementById("fieldStudentAadhaar").value.trim();
+      // Masked output for confidential Aadhaar details
+      document.getElementById("pStudentAadhaar").innerText = "[Aadhaar Redacted]";
       document.getElementById("pIdMark1").innerText = document.getElementById("fieldIdMark1").value || "N/A";
       document.getElementById("pIdMark2").innerText = document.getElementById("fieldIdMark2").value || "N/A";
 
@@ -1336,12 +1341,12 @@
       document.getElementById("pFatherName").innerText = document.getElementById("fieldFatherName").value;
       document.getElementById("pFatherMobile").innerText = document.getElementById("fieldFatherMobile").value;
       document.getElementById("pFatherOcc").innerText = document.getElementById("fieldFatherOcc").value || "N/A";
-      document.getElementById("pFatherAadhaar").innerText = document.getElementById("fieldFatherAadhaar").value.trim();
+      document.getElementById("pFatherAadhaar").innerText = "[Aadhaar Redacted]";
 
       document.getElementById("pMotherName").innerText = document.getElementById("fieldMotherName").value;
       document.getElementById("pMotherMobile").innerText = document.getElementById("fieldMotherMobile").value || "N/A";
       document.getElementById("pMotherOcc").innerText = document.getElementById("fieldMotherOcc").value || "N/A";
-      document.getElementById("pMotherAadhaar").innerText = document.getElementById("fieldMotherAadhaar").value.trim();
+      document.getElementById("pMotherAadhaar").innerText = "[Aadhaar Redacted]";
 
       document.getElementById("pPermAddress").innerText = `${document.getElementById("fieldPermAddress").value}, Dist: ${document.getElementById("fieldPermDistrict").value}, ${document.getElementById("fieldPermState").value} - ${document.getElementById("fieldPermPincode").value}`;
       document.getElementById("pCurrAddress").innerText = `${document.getElementById("fieldCurrAddress").value}, Dist: ${document.getElementById("fieldCurrDistrict").value} - ${document.getElementById("fieldCurrPincode").value}`;
@@ -1374,6 +1379,7 @@
       const submitBtn = document.getElementById("finalSubmitBtn");
       const statusEl = document.getElementById("submissionStatus");
       const postActions = document.getElementById("postSubmitActions");
+      const driveDownloadBtn = document.getElementById("downloadDrivePdfBtn");
 
       submitBtn.disabled = true;
       statusEl.style.display = "block";
@@ -1454,12 +1460,33 @@
           statusEl.innerHTML = `✓ Application Saved & PDF Backup Created for ${result.regdNo}!`;
           submitBtn.style.display = "none";
 
+          // Stamp the current date and time on the preview document
+          const now = new Date();
+          const stampStr = now.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+          }) + ", " + now.toLocaleTimeString("en-IN", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true
+          });
+          const stampEl = document.getElementById("pMetaTimestamp");
+          if (stampEl) stampEl.innerText = `Submitted: ${stampStr}`;
+
+          // Set up the Drive PDF download button if URL is returned
+          if (result.pdfUrl) {
+            driveDownloadBtn.href = result.pdfUrl;
+            driveDownloadBtn.style.display = "inline-block";
+          }
+
           if (document.querySelector(".screen-notice")) {
             document.querySelector(".screen-notice").style.display = "none";
           }
           const editBtn = document.querySelector(".preview-actions button:first-child");
           if (editBtn) editBtn.style.display = "none";
           postActions.style.display = "flex";
+
           window.print();
         } else {
           throw new Error(result ? result.message : "Submission rejected");
