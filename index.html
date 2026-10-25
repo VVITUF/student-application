@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Details Form - VVIT</title>
-  <link rel="stylesheet" href="style.css?v=4.0">
+  <link rel="stylesheet" href="style.css">
   <style>
     @page {
       size: A4 portrait;
@@ -25,6 +25,8 @@
       .screen-notice,
       .preview-actions,
       #submissionStatus,
+      #postSubmitActions,
+      .post-actions,
       .alert-box,
       .btn {
         display: none !important;
@@ -1400,7 +1402,7 @@
       document.getElementById("pStudentEmail").innerText = document.getElementById("fieldStudentEmail").value;
       document.getElementById("pCategoryCaste").innerText = `${document.getElementById("fieldCategory").value} (${document.getElementById("fieldCaste").value || "N/A"})`;
 
-      // Display actual values directly from the input fields
+      // Assign the actual submitted values
       document.getElementById("pStudentAadhaar").innerText = document.getElementById("fieldStudentAadhaar").value.trim();
       document.getElementById("pIdMark1").innerText = document.getElementById("fieldIdMark1").value || "N/A";
       document.getElementById("pIdMark2").innerText = document.getElementById("fieldIdMark2").value || "N/A";
