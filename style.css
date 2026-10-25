@@ -7,6 +7,7 @@
   --primary-hover: #172554;
   --secondary: #64748b;
   --success: #16a34a;
+  --success-hover: #15803d;
   --danger: #dc2626;
   --bg-color: #f1f5f9;
   --card-bg: #ffffff;
@@ -49,7 +50,7 @@ body {
 }
 
 .main-container {
-  max-width: 900px;
+  max-width: 920px;
   margin: 24px auto;
   padding: 0 16px;
 }
@@ -102,7 +103,8 @@ body {
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 14px;
+  gap: 16px;
+  align-items: start;
 }
 
 .form-group {
@@ -118,20 +120,22 @@ label {
   font-size: 0.82rem;
   font-weight: 600;
   color: #334155;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
 
-.required {
+.required, .req {
   color: var(--danger);
 }
 
 input, select {
-  padding: 8px 10px;
+  padding: 9px 12px;
   border: 1px solid var(--border-color);
   border-radius: 5px;
   font-size: 0.9rem;
   color: var(--text-main);
   background-color: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
 }
 
 input:focus, select:focus {
@@ -140,11 +144,44 @@ input:focus, select:focus {
   box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.15);
 }
 
-.readonly-input {
-  background-color: #f8fafc;
+/* Validation Feedback Styles */
+.field-error {
+  color: var(--danger);
+  font-size: 0.78rem;
+  margin-top: 4px;
+  font-weight: 500;
+  display: none;
+}
+
+.field-error.visible {
+  display: block;
+}
+
+.input-invalid {
+  border-color: var(--danger) !important;
+  background-color: #fef2f2 !important;
+}
+
+.input-invalid:focus {
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2) !important;
+}
+
+.readonly-input, .input-readonly {
+  background-color: #f8fafc !important;
   cursor: not-allowed;
-  color: #64748b;
-  font-weight: 600;
+  color: #64748b !important;
+  font-weight: 500;
+}
+
+/* Date of Birth 3-Dropdown Layout */
+.dob-select-group {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1.4fr;
+  gap: 8px;
+}
+
+.dob-select-group select {
+  padding: 9px 6px;
 }
 
 .sync-checkbox-wrap {
@@ -171,7 +208,7 @@ input:focus, select:focus {
 .upload-box {
   border: 1.5px dashed var(--border-color);
   border-radius: 6px;
-  padding: 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -179,7 +216,19 @@ input:focus, select:focus {
   background-color: #f8fafc;
 }
 
-.preview-thumb {
+.upload-dropzone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.upload-dropzone input[type="file"] {
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.preview-thumb, .thumb-preview {
   max-width: 140px;
   max-height: 160px;
   margin-top: 10px;
@@ -188,7 +237,7 @@ input:focus, select:focus {
   border-radius: 4px;
 }
 
-.preview-card-thumb {
+.preview-card-thumb, .combined-preview {
   width: 130px;
   height: 167px;
   margin-top: 10px;
@@ -196,14 +245,14 @@ input:focus, select:focus {
   display: none;
 }
 
-.size-indicator {
+.size-indicator, .size-tag {
   font-size: 0.78rem;
   color: #0284c7;
   font-weight: 600;
   margin-top: 6px;
 }
 
-/* Buttons & Actions */
+/* Buttons & Dual Actions */
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -211,14 +260,26 @@ input:focus, select:focus {
   margin-top: 24px;
 }
 
+.form-actions {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.dual-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
 .btn {
-  padding: 9px 20px;
-  font-size: 0.9rem;
+  padding: 10px 24px;
+  font-size: 0.92rem;
   font-weight: 600;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
+  display: inline-block;
 }
 
 .btn-primary {
@@ -230,9 +291,18 @@ input:focus, select:focus {
   background-color: var(--primary-hover);
 }
 
+.btn-primary:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
 .btn-secondary {
   background-color: var(--secondary);
   color: #ffffff;
+}
+
+.btn-secondary:hover {
+  background-color: #475569;
 }
 
 .btn-success {
@@ -240,17 +310,35 @@ input:focus, select:focus {
   color: #ffffff;
 }
 
+.btn-success:hover {
+  background-color: var(--success-hover);
+}
+
+/* Alerts */
 .alert-box {
   padding: 10px 14px;
   border-radius: 5px;
   font-size: 0.86rem;
+  margin-top: 14px;
   margin-bottom: 16px;
 }
 
-.alert-box.danger {
+.alert-box.danger, .alert-box.error {
   background-color: #fee2e2;
   color: #991b1b;
   border: 1px solid #f87171;
+}
+
+.alert-box.success {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.alert-box.info {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
 }
 
 .submission-status-msg {
@@ -266,11 +354,20 @@ input:focus, select:focus {
   margin-top: 20px;
 }
 
+@media (max-width: 650px) {
+  .dual-actions {
+    flex-direction: column;
+  }
+  .dob-select-group {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ==========================================
    A4 PRINTABLE DOCUMENT FORMATTING
    ========================================== */
 
-.preview-wrapper {
+.preview-wrapper, .a4-preview-wrapper {
   background: transparent;
   padding: 0;
   box-shadow: none;
@@ -296,28 +393,27 @@ input:focus, select:focus {
   border: 1px solid #cbd5e1;
 }
 
-.doc-header {
+.doc-header, .preview-header {
   text-align: center;
   border-bottom: 2px solid #0f172a;
   padding-bottom: 8px;
   margin-bottom: 12px;
 }
 
-.univ-title {
+.univ-title, .preview-header h3 {
   font-size: 13pt;
   font-weight: 800;
   color: #0f172a;
 }
 
-.doc-subtitle {
+.doc-subtitle, .preview-header h4 {
   font-size: 9.5pt;
   font-weight: 600;
   color: #475569;
   margin-top: 2px;
 }
 
-/* Composite Grid (Table on Left, Photo pinned on Right) */
-.top-composite-grid {
+.top-composite-grid, .preview-top-grid {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -330,14 +426,14 @@ input:focus, select:focus {
   flex: 1;
 }
 
-.id-card-display-wrapper {
+.id-card-display-wrapper, .preview-photo-box {
   width: 120px;
   flex-shrink: 0;
   display: flex;
   justify-content: flex-end;
 }
 
-.composite-card-img {
+.composite-card-img, .preview-photo-box img {
   width: 110px;
   height: 141px;
   object-fit: cover;
@@ -354,33 +450,34 @@ input:focus, select:focus {
   padding-bottom: 2px;
 }
 
-.doc-table {
+.doc-table, .preview-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
-.doc-table td {
+.doc-table td, .doc-table th, .preview-table td, .preview-table th {
   border: 0.5px solid #cbd5e1;
-  padding: 3px 6px;
+  padding: 4px 6px;
   font-size: 8.5pt;
   vertical-align: middle;
 }
 
-.doc-table .lbl {
+.doc-table .lbl, .preview-table th {
   background-color: #f8fafc;
   font-weight: 700;
   color: #475569;
-  width: 18%;
+  width: 20%;
+  text-align: left;
 }
 
-.doc-table .val {
+.doc-table .val, .preview-table td {
   color: #0f172a;
   font-weight: 500;
-  width: 32%;
+  width: 30%;
 }
 
-.declaration-text {
+.declaration-text, .preview-declaration {
   font-size: 8pt;
   font-style: italic;
   color: #64748b;
@@ -389,7 +486,7 @@ input:focus, select:focus {
 }
 
 /* ==========================================
-   PRINT MEDIA RULES (PINNED PHOTO & CLEAN PAGE)
+   PRINT MEDIA RULES
    ========================================== */
 
 @media print {
@@ -400,20 +497,24 @@ input:focus, select:focus {
   }
 
   .app-header,
+  .form-header,
   #authCard,
   #welcomeBanner,
   #formCard,
   .screen-notice,
   .preview-actions,
+  .dual-actions,
   #submissionStatus,
-  #postSubmitActions {
+  #postSubmitActions,
+  #post-actions {
     display: none !important;
   }
 
-  .main-container {
+  .main-container, .container {
     max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    box-shadow: none !important;
   }
 
   .card {
@@ -423,7 +524,7 @@ input:focus, select:focus {
     margin: 0 !important;
   }
 
-  .a4-document {
+  .a4-document, .a4-preview-wrapper {
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
@@ -431,28 +532,27 @@ input:focus, select:focus {
     max-width: 100% !important;
   }
 
-  /* Strict pinned top-right image alignment in desktop print / PDF */
-  .top-composite-grid {
+  .top-composite-grid, .preview-top-grid {
     display: flex !important;
     flex-direction: row !important;
     justify-content: space-between !important;
     align-items: flex-start !important;
   }
 
-  .id-card-display-wrapper {
+  .id-card-display-wrapper, .preview-photo-box {
     width: 120px !important;
     flex-shrink: 0 !important;
     display: block !important;
   }
 
-  .composite-card-img {
+  .composite-card-img, .preview-photo-box img {
     width: 110px !important;
     height: 141px !important;
     border: 1.5px solid #000000 !important;
     page-break-inside: avoid !important;
   }
 
-  .doc-table td {
+  .doc-table td, .doc-table th, .preview-table td, .preview-table th {
     font-size: 8pt !important;
     padding: 2.5px 5px !important;
   }
