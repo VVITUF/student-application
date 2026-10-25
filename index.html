@@ -452,13 +452,10 @@
           </div>
         </fieldset>
 
-        <!-- Direct Actions on Form -->
-        <div class="dual-actions">
+        <!-- Direct Actions on Form (Only Preview Application) -->
+        <div class="form-actions" style="margin-top: 24px; text-align: center;">
           <button type="button" class="btn btn-primary" onclick="generateAndShowA4Preview()">Preview Application</button>
-          <button type="button" id="formDirectSubmitBtn" class="btn btn-success" onclick="executeSubmissionDirectly()">Submit Application</button>
         </div>
-
-        <div id="formDirectStatus" class="alert-box" style="display: none; margin-top: 16px;"></div>
       </form>
     </div>
 
@@ -625,7 +622,7 @@
     </div>
   </div>
 
-  <!-- INLINE LOGIC (NO CACHED APP.JS ISSUES) -->
+  <!-- INLINE LOGIC -->
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwIX5jqnxsYTwz3we0fwBvjkGHhdtQ5kkoaxISIO1tZj-AXW4JmIldF7o5xVUQVu4cs/exec";
 
@@ -867,7 +864,6 @@
           if (fieldAdm) fieldAdm.value = data.admissionNo || adm;
           if (fieldSec) fieldSec.value = data.section || sec;
 
-          // Intentionally blank for student input
           const fieldName = document.getElementById("fieldNameSsc");
           if (fieldName) fieldName.value = "";
 
@@ -1374,16 +1370,9 @@
       document.getElementById("formCard").style.display = "block";
     }
 
-    function executeSubmissionDirectly() {
-      if (!validateIdentityInputs()) return;
-      if (confirm("Are you sure you want to submit your application details directly?")) {
-        submitApplicationToCloud(true);
-      }
-    }
-
-    async function submitApplicationToCloud(isDirectFromForm = false) {
-      const submitBtn = document.getElementById(isDirectFromForm ? "formDirectSubmitBtn" : "finalSubmitBtn");
-      const statusEl = document.getElementById(isDirectFromForm ? "formDirectStatus" : "submissionStatus");
+    async function submitApplicationToCloud() {
+      const submitBtn = document.getElementById("finalSubmitBtn");
+      const statusEl = document.getElementById("submissionStatus");
       const postActions = document.getElementById("postSubmitActions");
 
       submitBtn.disabled = true;
@@ -1465,18 +1454,13 @@
           statusEl.innerHTML = `✓ Application Saved & PDF Backup Created for ${result.regdNo}!`;
           submitBtn.style.display = "none";
 
-          if (isDirectFromForm) {
-            const dualActions = document.querySelector(".dual-actions");
-            if (dualActions) dualActions.style.display = "none";
-          } else {
-            if (document.querySelector(".screen-notice")) {
-              document.querySelector(".screen-notice").style.display = "none";
-            }
-            const editBtn = document.querySelector(".preview-actions button:first-child");
-            if (editBtn) editBtn.style.display = "none";
-            postActions.style.display = "flex";
-            window.print();
+          if (document.querySelector(".screen-notice")) {
+            document.querySelector(".screen-notice").style.display = "none";
           }
+          const editBtn = document.querySelector(".preview-actions button:first-child");
+          if (editBtn) editBtn.style.display = "none";
+          postActions.style.display = "flex";
+          window.print();
         } else {
           throw new Error(result ? result.message : "Submission rejected");
         }
