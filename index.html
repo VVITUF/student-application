@@ -30,8 +30,9 @@
         <div class="form-group">
           <label for="authAdmNo">Admission Number <span class="required">*</span></label>
           <input type="text" id="authAdmNo" 
-                 placeholder="Enter your 10 digit Admission No. It starts with letters VCO/VON/VOF" 
+                 placeholder="e.g. VCO2601826" 
                  maxlength="10" required autocomplete="off">
+          <small class="field-hint">10 digits. Starts with letters VCO / VON / VOF</small>
         </div>
 
         <div class="form-group">
@@ -215,8 +216,8 @@
             </div>
 
             <div class="form-group">
-              <label for="fieldStudentAadhaar">Student Identification (12-digit) <span class="required">*</span></label>
-              <input type="text" id="fieldStudentAadhaar" maxlength="12" placeholder="12-digit identification number" required>
+              <label for="fieldStudentAadhaar">Student Aadhaar (12-digit) <span class="required">*</span></label>
+              <input type="text" id="fieldStudentAadhaar" maxlength="12" placeholder="12-digit Aadhaar number" required>
               <span id="err_fieldStudentAadhaar" class="field-error"></span>
             </div>
 
@@ -289,8 +290,8 @@
             </div>
 
             <div class="form-group">
-              <label for="fieldFatherAadhaar">Father's Identification (12-digit) <span class="required">*</span></label>
-              <input type="text" id="fieldFatherAadhaar" maxlength="12" placeholder="12-digit identification number" required>
+              <label for="fieldFatherAadhaar">Father's Aadhaar (12-digit) <span class="required">*</span></label>
+              <input type="text" id="fieldFatherAadhaar" maxlength="12" placeholder="12-digit Aadhaar number" required>
               <span id="err_fieldFatherAadhaar" class="field-error"></span>
             </div>
 
@@ -311,8 +312,8 @@
             </div>
 
             <div class="form-group">
-              <label for="fieldMotherAadhaar">Mother's Identification (12-digit) <span class="required">*</span></label>
-              <input type="text" id="fieldMotherAadhaar" maxlength="12" placeholder="12-digit identification number" required>
+              <label for="fieldMotherAadhaar">Mother's Aadhaar (12-digit) <span class="required">*</span></label>
+              <input type="text" id="fieldMotherAadhaar" maxlength="12" placeholder="12-digit Aadhaar number" required>
               <span id="err_fieldMotherAadhaar" class="field-error"></span>
             </div>
           </div>
@@ -536,7 +537,7 @@
           <tr>
             <td class="lbl">Category & Sub-Caste:</td>
             <td class="val" id="pCategoryCaste"></td>
-            <td class="lbl">Identification Number:</td>
+            <td class="lbl">Aadhaar Number:</td>
             <td class="val" id="pStudentAadhaar"></td>
           </tr>
           <tr>
@@ -574,7 +575,7 @@
           <tr>
             <td class="lbl">Father's Occ:</td>
             <td class="val" id="pFatherOcc"></td>
-            <td class="lbl">Father's Identification:</td>
+            <td class="lbl">Father's Aadhaar:</td>
             <td class="val" id="pFatherAadhaar"></td>
           </tr>
           <tr>
@@ -586,7 +587,7 @@
           <tr>
             <td class="lbl">Mother's Occ:</td>
             <td class="val" id="pMotherOcc"></td>
-            <td class="lbl">Mother's Identification:</td>
+            <td class="lbl">Mother's Aadhaar:</td>
             <td class="val" id="pMotherAadhaar"></td>
           </tr>
         </table>
@@ -739,9 +740,9 @@
       bindFieldValidator("fieldFatherMobile", 10, "Father's Mobile must be exactly 10 digits.");
       bindFieldValidator("fieldMotherMobile", 10, "Mother's Mobile must be exactly 10 digits.", true);
 
-      bindFieldValidator("fieldStudentAadhaar", 12, "Student Identification must be exactly 12 digits.");
-      bindFieldValidator("fieldFatherAadhaar", 12, "Father's Identification must be exactly 12 digits.");
-      bindFieldValidator("fieldMotherAadhaar", 12, "Mother's Identification must be exactly 12 digits.");
+      bindFieldValidator("fieldStudentAadhaar", 12, "Student Aadhaar must be exactly 12 digits.");
+      bindFieldValidator("fieldFatherAadhaar", 12, "Father's Aadhaar must be exactly 12 digits.");
+      bindFieldValidator("fieldMotherAadhaar", 12, "Mother's Aadhaar must be exactly 12 digits.");
 
       ["fieldSscMarks", "fieldInterMarks"].forEach(id => {
         const el = document.getElementById(id);
@@ -1281,17 +1282,17 @@
       const motherAadhaar = document.getElementById("fieldMotherAadhaar").value.trim();
 
       if (!/^\d{12}$/.test(studentAadhaar)) {
-        alert("Student Identification Number must be exactly 12 numeric digits.");
+        alert("Student Aadhaar Number must be exactly 12 numeric digits.");
         document.getElementById("fieldStudentAadhaar").focus();
         return false;
       }
       if (!/^\d{12}$/.test(fatherAadhaar)) {
-        alert("Father's Identification Number must be exactly 12 numeric digits.");
+        alert("Father's Aadhaar Number must be exactly 12 numeric digits.");
         document.getElementById("fieldFatherAadhaar").focus();
         return false;
       }
       if (!/^\d{12}$/.test(motherAadhaar)) {
-        alert("Mother's Identification Number must be exactly 12 numeric digits.");
+        alert("Mother's Aadhaar Number must be exactly 12 numeric digits.");
         document.getElementById("fieldMotherAadhaar").focus();
         return false;
       }
@@ -1378,7 +1379,7 @@
       submitBtn.disabled = true;
       statusEl.style.display = "block";
       statusEl.className = "alert-box info";
-      statusEl.innerText = "Submitting application and generating university records...";
+      statusEl.innerText = "Submitting application and generating University records...";
 
       const commuteMode = document.getElementById("fieldCommuteMode").value.trim();
       const boardingStop = commuteMode === "College Bus" ? document.getElementById("fieldBusStop").value.trim() : "NA";
