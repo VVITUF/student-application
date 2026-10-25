@@ -3,210 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Registration & Enrollment — 2026</title>
+  <title>Student Registration & Enrollment - VVIT</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="container">
+    <header class="form-header">
+      <h2>VASIREDDY VENKATADRI INTERNATIONAL TECHNOLOGICAL UNIVERSITY</h2>
+      <h3>STUDENT REGISTRATION & ENROLLMENT PORTAL — 2026</h3>
+    </header>
 
-  <!-- Header Banner -->
-  <header class="app-header">
-    <div class="header-container">
-      <h1>Vasireddy Venkatadri International Technological University</h1>
-      <p class="subtitle">Student Registration & Enrollment Record — 2026</p>
-    </div>
-  </header>
-
-  <main class="main-container">
-    
-    <!-- Stage 1: Student Lookup & Auth Card -->
-    <section id="authCard" class="card">
-      <h2 class="card-title">Student Verification</h2>
-      <p class="card-desc">Enter your credentials to access and complete your registration record.</p>
+    <form id="studentRegistrationForm" novalidate>
       
-      <div id="authAlert" class="alert-box danger" style="display: none;"></div>
-
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="authRegdNo">Enrollment / Regd. Number <span class="required">*</span></label>
-          <input type="text" id="authRegdNo" placeholder="e.g. 26VV1A0501" autocomplete="off">
-        </div>
-        <div class="form-group">
-          <label for="authAdmNo">Admission Number <span class="required">*</span></label>
-          <input type="text" id="authAdmNo" placeholder="e.g. ADM2026-001" autocomplete="off">
-        </div>
-        <div class="form-group">
-          <label for="authSection">Section <span class="required">*</span></label>
-          <select id="authSection" required>
-            <option value="">Select Section</option>
-            <!-- Civil Engineering (3) -->
-            <option value="CIV-1">CIV-1</option>
-            <option value="CIV-2">CIV-2</option>
-            <option value="CIV-3">CIV-3</option>
-
-            <!-- Electrical & Electronics Engineering (3) -->
-            <option value="EEE-1">EEE-1</option>
-            <option value="EEE-2">EEE-2</option>
-            <option value="EEE-3">EEE-3</option>
-
-            <!-- Mechanical Engineering (3) -->
-            <option value="MEC-1">MEC-1</option>
-            <option value="MEC-2">MEC-2</option>
-            <option value="MEC-3">MEC-3</option>
-
-            <!-- Electronics & Communication Engineering (6) -->
-            <option value="ECE-1">ECE-1</option>
-            <option value="ECE-2">ECE-2</option>
-            <option value="ECE-3">ECE-3</option>
-            <option value="ECE-4">ECE-4</option>
-            <option value="ECE-5">ECE-5</option>
-            <option value="ECE-6">ECE-6</option>
-
-            <!-- Computer Science & Engineering (11) -->
-            <option value="CSE-1">CSE-1</option>
-            <option value="CSE-2">CSE-2</option>
-            <option value="CSE-3">CSE-3</option>
-            <option value="CSE-4">CSE-4</option>
-            <option value="CSE-5">CSE-5</option>
-            <option value="CSE-6">CSE-6</option>
-            <option value="CSE-7">CSE-7</option>
-            <option value="CSE-8">CSE-8</option>
-            <option value="CSE-9">CSE-9</option>
-            <option value="CSE-10">CSE-10</option>
-            <option value="CSE-11">CSE-11</option>
-
-            <!-- CSE - Data Science / CAD (8) -->
-            <option value="CAD-1">CAD-1</option>
-            <option value="CAD-2">CAD-2</option>
-            <option value="CAD-3">CAD-3</option>
-            <option value="CAD-4">CAD-4</option>
-            <option value="CAD-5">CAD-5</option>
-            <option value="CAD-6">CAD-6</option>
-            <option value="CAD-7">CAD-7</option>
-            <option value="CAD-8">CAD-8</option>
-
-            <!-- CSE - IoT & Cybersecurity / CIC (5) -->
-            <option value="CIC-1">CIC-1</option>
-            <option value="CIC-2">CIC-2</option>
-            <option value="CIC-3">CIC-3</option>
-            <option value="CIC-4">CIC-4</option>
-            <option value="CIC-5">CIC-5</option>
-
-            <!-- CSE - AI & Machine Learning / CSM (23) -->
-            <option value="CSM-1">CSM-1</option>
-            <option value="CSM-2">CSM-2</option>
-            <option value="CSM-3">CSM-3</option>
-            <option value="CSM-4">CSM-4</option>
-            <option value="CSM-5">CSM-5</option>
-            <option value="CSM-6">CSM-6</option>
-            <option value="CSM-7">CSM-7</option>
-            <option value="CSM-8">CSM-8</option>
-            <option value="CSM-9">CSM-9</option>
-            <option value="CSM-10">CSM-10</option>
-            <option value="CSM-11">CSM-11</option>
-            <option value="CSM-12">CSM-12</option>
-            <option value="CSM-13">CSM-13</option>
-            <option value="CSM-14">CSM-14</option>
-            <option value="CSM-15">CSM-15</option>
-            <option value="CSM-16">CSM-16</option>
-            <option value="CSM-17">CSM-17</option>
-            <option value="CSM-18">CSM-18</option>
-            <option value="CSM-19">CSM-19</option>
-            <option value="CSM-20">CSM-20</option>
-            <option value="CSM-21">CSM-21</option>
-            <option value="CSM-22">CSM-22</option>
-            <option value="CSM-23">CSM-23</option>
-
-            <!-- Management Programmes (3) -->
-            <option value="BBA-1">BBA-1</option>
-            <option value="BBA-2">BBA-2</option>
-            <option value="MBA-1">MBA-1</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button id="authBtn" class="btn btn-primary" onclick="handleAuthVerification()">Verify & Proceed</button>
-      </div>
-    </section>
-
-    <!-- Welcome Banner (Revealed after verification) -->
-    <div id="welcomeBanner" class="welcome-box" style="display: none;">
-      <span id="welcomeNameText"></span>
-    </div>
-
-    <!-- Stage 2: Main Application Form -->
-    <section id="formCard" class="card" style="display: none;">
-      <form id="studentApplicationForm" onsubmit="event.preventDefault(); generateAndShowA4Preview();">
-        
-        <!-- Academic Identity Details -->
-        <h3 class="section-title">1. Academic & Institutional Identity</h3>
+      <!-- SECTION 1: VERIFICATION & ACADEMIC DETAILS -->
+      <fieldset class="form-section">
+        <legend>1. Verification & Academic Details</legend>
         <div class="form-grid">
+          
           <div class="form-group">
-            <label for="fieldEnrollmentNo">Enrollment / Regd No</label>
-            <input type="text" id="fieldEnrollmentNo" readonly class="readonly-input">
+            <label for="enrollmentNo">Regd. Number <span class="req">*</span></label>
+            <input type="text" id="enrollmentNo" name="enrollmentNo" 
+                   placeholder="Enter your 14 digit Regd No." 
+                   maxlength="14" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldAdmissionNo">Admission No</label>
-            <input type="text" id="fieldAdmissionNo" readonly class="readonly-input">
+            <label for="admissionNo">Admission Number <span class="req">*</span></label>
+            <input type="text" id="admissionNo" name="admissionNo" 
+                   placeholder="Enter your 10 digit Admission No. It starts with letters VCO/VON/VOF" 
+                   maxlength="10" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldProgramme">Programme Admitted</label>
-            <input type="text" id="fieldProgramme" value="B.Tech" readonly class="readonly-input">
-          </div>
-          <div class="form-group">
-            <label for="fieldSection">Section</label>
-            <input type="text" id="fieldSection" readonly class="readonly-input">
-          </div>
-          <div class="form-group">
-            <label for="fieldAdmissionType">Admission Type</label>
-            <select id="fieldAdmissionType" required>
-              <option value="Convener (EAPCET)">Convener (EAPCET)</option>
-              <option value="Management">Management</option>
-              <option value="NRI">NRI</option>
-              <option value="Spot Admission">Spot Admission</option>
+            <label for="programmeSection">Section <span class="req">*</span></label>
+            <select id="programmeSection" name="programmeSection" required>
+              <option value="">Select Section</option>
+              <option value="CIV-1">CIV-1</option>
+              <option value="CIV-2">CIV-2</option>
+              <option value="CSE-1">CSE-1</option>
+              <option value="CSE-2">CSE-2</option>
+              <option value="ECE-1">ECE-1</option>
+              <option value="ECE-2">ECE-2</option>
             </select>
           </div>
-          <div class="form-group">
-            <label for="fieldRankHtNo">EAPCET Rank / Hall Ticket No</label>
-            <input type="text" id="fieldRankHtNo" placeholder="Rank or Hall Ticket">
-          </div>
-          <div class="form-group">
-            <label for="fieldFeeReimb">Fee Reimbursement Eligible?</label>
-            <select id="fieldFeeReimb" required>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="fieldApaarId">APAAR ID</label>
-            <input type="text" id="fieldApaarId" placeholder="12-digit APAAR ID">
+
+          <div class="form-group" style="align-self: flex-end;">
+            <button type="button" id="btnVerify" class="btn-primary">Verify Credentials</button>
           </div>
         </div>
 
-        <!-- Personal Details -->
-        <h3 class="section-title">2. Personal Information</h3>
+        <div id="verifiedBanner" class="alert-box success hidden">
+          Credentials Verified: <strong id="verifiedStudentName"></strong>
+        </div>
+      </fieldset>
+
+      <!-- SECTION 2: PERSONAL INFORMATION -->
+      <fieldset class="form-section">
+        <legend>2. Personal Information</legend>
         <div class="form-grid">
-          <div class="form-group full-width">
-            <label for="fieldNameSsc">Student Name (as per SSC Records) <span class="required">*</span></label>
-            <input type="text" id="fieldNameSsc" required>
-          </div>
+          
           <div class="form-group">
-            <label for="fieldGender">Gender <span class="required">*</span></label>
-            <select id="fieldGender" required>
+            <label for="studentNameSsc">Full Name (as per SSC/CBSE/ICSE) <span class="req">*</span></label>
+            <input type="text" id="studentNameSsc" name="studentNameSsc" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gender">Gender <span class="req">*</span></label>
+            <select id="gender" name="gender" required>
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Other">Other</option>
             </select>
           </div>
+
           <div class="form-group">
-            <label for="fieldDob">Date of Birth <span class="required">*</span></label>
-            <input type="date" id="fieldDob" required>
+            <label for="dob">Date of Birth <span class="req">*</span></label>
+            <input type="date" id="dob" name="dob" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldBloodGroup">Blood Group <span class="required">*</span></label>
-            <select id="fieldBloodGroup" required>
-              <option value="">Select Group</option>
+            <label for="bloodGroup">Blood Group <span class="req">*</span></label>
+            <select id="bloodGroup" name="bloodGroup" required>
+              <option value="">Select Blood Group</option>
               <option value="A+">A+</option>
               <option value="A-">A-</option>
               <option value="B+">B+</option>
@@ -217,9 +96,11 @@
               <option value="AB-">AB-</option>
             </select>
           </div>
+
           <div class="form-group">
-            <label for="fieldCategory">Category <span class="required">*</span></label>
-            <select id="fieldCategory" required>
+            <label for="category">Category <span class="req">*</span></label>
+            <select id="category" name="category" required>
+              <option value="">Select Category</option>
               <option value="OC">OC</option>
               <option value="BC-A">BC-A</option>
               <option value="BC-B">BC-B</option>
@@ -231,404 +112,248 @@
               <option value="EWS">EWS</option>
             </select>
           </div>
+
           <div class="form-group">
-            <label for="fieldCaste">Sub-Caste</label>
-            <input type="text" id="fieldCaste" placeholder="e.g. Kapu, Reddy, Kamma, Mala, etc.">
+            <label for="caste">Sub-Caste <span class="req">*</span></label>
+            <input type="text" id="caste" name="caste" 
+                   placeholder="e.g. Kapu, Reddy, Kamma, Mala, etc." required>
           </div>
+
           <div class="form-group">
-            <label for="fieldStudentMobile">Student Mobile (10 digits) <span class="required">*</span></label>
-            <input type="tel" id="fieldStudentMobile" maxlength="10" inputmode="numeric" placeholder="10-digit Mobile" required>
+            <label for="studentMobile">Student Mobile (10-digit) <span class="req">*</span></label>
+            <input type="tel" id="studentMobile" name="studentMobile" pattern="[0-9]{10}" maxlength="10" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldStudentEmail">Student Email <span class="required">*</span></label>
-            <input type="email" id="fieldStudentEmail" placeholder="student@example.com" required>
+            <label for="studentEmail">Student Email <span class="req">*</span></label>
+            <input type="email" id="studentEmail" name="studentEmail" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldStudentAadhaar">Student Aadhaar Number (12 digits) <span class="required">*</span></label>
-            <input type="tel" id="fieldStudentAadhaar" maxlength="12" inputmode="numeric" placeholder="12-digit Aadhaar" required>
+            <label for="studentAadhaar">Student Aadhaar (12-digit) <span class="req">*</span></label>
+            <input type="text" id="studentAadhaar" name="studentAadhaar" pattern="[0-9]{12}" maxlength="12" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldIdMark1">Identification Mark 1 <span class="required">*</span></label>
-            <input type="text" id="fieldIdMark1" placeholder="As per SSC Certificate" required>
+            <label for="identificationMark1">Identification Mark 1 <span class="req">*</span></label>
+            <input type="text" id="identificationMark1" name="identificationMark1" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldIdMark2">Identification Mark 2</label>
-            <input type="text" id="fieldIdMark2" placeholder="As per SSC Certificate">
+            <label for="identificationMark2">Identification Mark 2 <span class="req">*</span></label>
+            <input type="text" id="identificationMark2" name="identificationMark2" required>
           </div>
         </div>
+      </fieldset>
 
-        <!-- Prior Academic Qualifications -->
-        <h3 class="section-title">3. Prior Educational Qualifications</h3>
+      <!-- SECTION 3: EDUCATIONAL QUALIFICATIONS -->
+      <fieldset class="form-section">
+        <legend>3. Educational Qualifications</legend>
         <div class="form-grid">
+          
           <div class="form-group">
-            <label for="fieldSscRegd">SSC / 10th Hall Ticket / Regd No <span class="required">*</span></label>
-            <input type="text" id="fieldSscRegd" required>
+            <label for="sscRegdNo">SSC/CBSE/ICSE Regd. Number <span class="req">*</span></label>
+            <input type="text" id="sscRegdNo" name="sscRegdNo" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldSscMarks">SSC Marks Obtained / Total <span class="required">*</span></label>
-            <input type="text" id="fieldSscMarks" placeholder="e.g. 580 / 600" required>
+            <label for="sscMarks">SSC/CBSE/ICSE Marks Obtained <span class="req">*</span></label>
+            <input type="number" step="1" min="0" id="sscMarks" name="sscMarks" placeholder="" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldSscPercent">SSC Percentage / GPA <span class="required">*</span></label>
-            <input type="text" id="fieldSscPercent" placeholder="e.g. 96.6%" required>
+            <label for="sscPercentage">SSC/CBSE/ICSE Percentage <span class="req">*</span></label>
+            <input type="number" step="0.01" min="0" max="100" id="sscPercentage" name="sscPercentage" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldInterRegd">Inter / 12th / Diploma Regd No <span class="required">*</span></label>
-            <input type="text" id="fieldInterRegd" required>
+            <label for="interRegdNo">Inter / Diploma Regd. Number <span class="req">*</span></label>
+            <input type="text" id="interRegdNo" name="interRegdNo" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldInterMarks">Inter / Diploma Marks Obtained <span class="required">*</span></label>
-            <input type="text" id="fieldInterMarks" placeholder="e.g. 980 / 1000" required>
+            <label for="interMarks">Inter / Diploma Marks Obtained <span class="req">*</span></label>
+            <input type="number" step="1" min="0" id="interMarks" name="interMarks" placeholder="" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldInterPercent">Inter / Diploma Percentage / GPA <span class="required">*</span></label>
-            <input type="text" id="fieldInterPercent" placeholder="e.g. 98.0%" required>
+            <label for="interPercentage">Inter / Diploma Percentage <span class="req">*</span></label>
+            <input type="number" step="0.01" min="0" max="100" id="interPercentage" name="interPercentage" required>
           </div>
         </div>
+      </fieldset>
 
-        <!-- Parents / Guardians Details -->
-        <h3 class="section-title">4. Parent / Guardian Details</h3>
+      <!-- SECTION 4: PARENT / GUARDIAN DETAILS -->
+      <fieldset class="form-section">
+        <legend>4. Parent / Guardian Details</legend>
         <div class="form-grid">
+          
           <div class="form-group">
-            <label for="fieldFatherName">Father's Name <span class="required">*</span></label>
-            <input type="text" id="fieldFatherName" required>
+            <label for="fatherName">Father's Name <span class="req">*</span></label>
+            <input type="text" id="fatherName" name="fatherName" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldFatherMobile">Father's Mobile (10 digits) <span class="required">*</span></label>
-            <input type="tel" id="fieldFatherMobile" maxlength="10" inputmode="numeric" placeholder="10-digit Mobile" required>
+            <label for="fatherMobile">Father's Mobile <span class="req">*</span></label>
+            <input type="tel" id="fatherMobile" name="fatherMobile" pattern="[0-9]{10}" maxlength="10" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldFatherOcc">Father's Occupation</label>
-            <input type="text" id="fieldFatherOcc" placeholder="e.g. Business, Agriculture, Employee">
+            <label for="fatherOccupation">Father's Occupation <span class="req">*</span></label>
+            <input type="text" id="fatherOccupation" name="fatherOccupation" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldFatherAadhaar">Father's Aadhaar (12 digits) <span class="required">*</span></label>
-            <input type="tel" id="fieldFatherAadhaar" maxlength="12" inputmode="numeric" placeholder="12-digit Aadhaar" required>
+            <label for="fatherAadhaar">Father's Aadhaar <span class="req">*</span></label>
+            <input type="text" id="fatherAadhaar" name="fatherAadhaar" pattern="[0-9]{12}" maxlength="12" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldMotherName">Mother's Name <span class="required">*</span></label>
-            <input type="text" id="fieldMotherName" required>
+            <label for="motherName">Mother's Name <span class="req">*</span></label>
+            <input type="text" id="motherName" name="motherName" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldMotherMobile">Mother's Mobile (10 digits)</label>
-            <input type="tel" id="fieldMotherMobile" maxlength="10" inputmode="numeric" placeholder="10-digit Mobile">
+            <label for="motherMobile">Mother's Mobile <span class="req">*</span></label>
+            <input type="tel" id="motherMobile" name="motherMobile" pattern="[0-9]{10}" maxlength="10" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldMotherOcc">Mother's Occupation</label>
-            <input type="text" id="fieldMotherOcc" placeholder="e.g. Homemaker, Teacher">
+            <label for="motherOccupation">Mother's Occupation <span class="req">*</span></label>
+            <input type="text" id="motherOccupation" name="motherOccupation" required>
           </div>
+
           <div class="form-group">
-            <label for="fieldMotherAadhaar">Mother's Aadhaar (12 digits) <span class="required">*</span></label>
-            <input type="tel" id="fieldMotherAadhaar" maxlength="12" inputmode="numeric" placeholder="12-digit Aadhaar" required>
+            <label for="motherAadhaar">Mother's Aadhaar <span class="req">*</span></label>
+            <input type="text" id="motherAadhaar" name="motherAadhaar" pattern="[0-9]{12}" maxlength="12" required>
           </div>
         </div>
+      </fieldset>
 
-        <!-- Residence & Campus Logistics -->
-        <h3 class="section-title">5. Address & Campus Logistics</h3>
+      <!-- SECTION 5: RESIDENCE & CAMPUS LOGISTICS -->
+      <fieldset class="form-section">
+        <legend>5. Residence & Campus Logistics</legend>
         <div class="form-grid">
-          <div class="form-group full-width">
-            <label for="fieldPermAddress">Permanent Address <span class="required">*</span></label>
-            <input type="text" id="fieldPermAddress" placeholder="Door No, Street, Village / Landmark" required>
-          </div>
-          <div class="form-group">
-            <label for="fieldPermDistrict">Permanent District <span class="required">*</span></label>
-            <input type="text" id="fieldPermDistrict" required>
-          </div>
-          <div class="form-group">
-            <label for="fieldPermState">Permanent State <span class="required">*</span></label>
-            <input type="text" id="fieldPermState" value="Andhra Pradesh" required>
-          </div>
-          <div class="form-group">
-            <label for="fieldPermPincode">Permanent Pincode <span class="required">*</span></label>
-            <input type="tel" id="fieldPermPincode" maxlength="6" inputmode="numeric" required>
-          </div>
-
-          <div class="form-group full-width sync-checkbox-wrap">
-            <label class="checkbox-label">
-              <input type="checkbox" id="syncAddressCheck" onchange="handleAddressSync()">
-              Current Address is the same as Permanent Address
-            </label>
-          </div>
-
-          <div class="form-group full-width">
-            <label for="fieldCurrAddress">Current / Communication Address <span class="required">*</span></label>
-            <input type="text" id="fieldCurrAddress" required>
-          </div>
-          <div class="form-group">
-            <label for="fieldCurrDistrict">Current District <span class="required">*</span></label>
-            <input type="text" id="fieldCurrDistrict" required>
-          </div>
-          <div class="form-group">
-            <label for="fieldCurrPincode">Current Pincode <span class="required">*</span></label>
-            <input type="tel" id="fieldCurrPincode" maxlength="6" inputmode="numeric" required>
+          
+          <div class="form-group full-col">
+            <label for="permanentAddress">Permanent Address <span class="req">*</span></label>
+            <input type="text" id="permanentAddress" name="permanentAddress" required>
           </div>
 
           <div class="form-group">
-            <label for="fieldResidentialStatus">Residential Status <span class="required">*</span></label>
-            <select id="fieldResidentialStatus" required onchange="handleResidenceChange()">
+            <label for="permanentDistrict">Permanent District <span class="req">*</span></label>
+            <input type="text" id="permanentDistrict" name="permanentDistrict" required>
+          </div>
+
+          <div class="form-group">
+            <label for="permanentState">Permanent State <span class="req">*</span></label>
+            <input type="text" id="permanentState" name="permanentState" value="Andhra Pradesh" required>
+          </div>
+
+          <div class="form-group">
+            <label for="permanentPincode">Permanent Pincode <span class="req">*</span></label>
+            <input type="text" id="permanentPincode" name="permanentPincode" pattern="[0-9]{6}" maxlength="6" required>
+          </div>
+
+          <div class="form-group full-col">
+            <label for="currentAddress">Current Address <span class="req">*</span></label>
+            <input type="text" id="currentAddress" name="currentAddress" required>
+          </div>
+
+          <div class="form-group">
+            <label for="currentDistrict">Current District <span class="req">*</span></label>
+            <input type="text" id="currentDistrict" name="currentDistrict" required>
+          </div>
+
+          <div class="form-group">
+            <label for="currentPincode">Current Pincode <span class="req">*</span></label>
+            <input type="text" id="currentPincode" name="currentPincode" pattern="[0-9]{6}" maxlength="6" required>
+          </div>
+
+          <div class="form-group">
+            <label for="residentialStatus">Residential Status <span class="req">*</span></label>
+            <select id="residentialStatus" name="residentialStatus" required>
               <option value="Day Scholar">Day Scholar</option>
-              <option value="VVIT University Hostel">VVIT University Hostel</option>
+              <option value="Hostel">College Hostel</option>
             </select>
           </div>
 
-          <div class="form-group" id="hostelGroup" style="display: none;">
-            <label for="fieldHostelSharing">Hostel Room Category</label>
-            <select id="fieldHostelSharing">
-              <option value="3-Sharing Attached">3-Sharing Attached</option>
-              <option value="4-Sharing Attached">4-Sharing Attached</option>
-              <option value="Non-AC Standard">Non-AC Standard</option>
-              <option value="AC Deluxe">AC Deluxe</option>
-            </select>
-          </div>
-
-          <div class="form-group" id="commuteGroup">
-            <label for="fieldCommuteMode">College Commute Mode</label>
-            <select id="fieldCommuteMode" onchange="handleCommuteChange()">
+          <div class="form-group">
+            <label for="collegeTravelMode">College Commute Mode <span class="req">*</span></label>
+            <select id="collegeTravelMode" name="collegeTravelMode" required>
+              <option value="">Select Commute Mode</option>
               <option value="College Bus">College Bus</option>
-              <option value="Personal Vehicle">Personal Vehicle</option>
-              <option value="RTC / Public Bus">RTC / Public Bus</option>
-              <option value="Walking">Walking</option>
+              <option value="Own Transport">Own Transport</option>
+              <option value="Public Transport">Public Transport</option>
+              <option value="Hostel / Walking">Hostel / Walking</option>
             </select>
           </div>
 
-          <div class="form-group" id="busStopGroup">
-            <label for="fieldBusStop">Bus Boarding Point / Stop</label>
-            <input type="text" id="fieldBusStop" placeholder="e.g. Benz Circle, Guntur Bus Stand">
+          <!-- Dynamic Bus Boarding Point (Visible only when College Bus is chosen) -->
+          <div class="form-group" id="busBoardingGroup" style="display: none;">
+            <label for="busBoardingPoint">Bus Boarding Point / Stop <span class="req">*</span></label>
+            <select id="busBoardingPoint" name="busBoardingPoint">
+              <option value="">Select Boarding Point</option>
+            </select>
           </div>
 
           <div class="form-group">
-            <label for="fieldCoCurricular">Co-Curricular / Sports / Hobbies</label>
-            <input type="text" id="fieldCoCurricular" placeholder="Cricket, Coding, Music, Badminton, etc.">
+            <label for="coCurricular">Extra curricular Activities <span class="req">*</span></label>
+            <select id="coCurricular" name="coCurricular" required>
+              <option value="">Select Activity</option>
+              <option value="Clubs">Clubs</option>
+              <option value="Sports">Sports</option>
+              <option value="Not interested">Not interested</option>
+            </select>
           </div>
+
           <div class="form-group">
-            <label for="fieldNccNss">NCC / NSS Participation</label>
-            <select id="fieldNccNss">
+            <label for="nccNss">NCC / NSS Participation <span class="req">*</span></label>
+            <select id="nccNss" name="nccNss" required>
               <option value="None">None</option>
               <option value="NCC">NCC</option>
               <option value="NSS">NSS</option>
-              <option value="Both">Both</option>
             </select>
           </div>
         </div>
+      </fieldset>
 
-        <!-- Photo & Signature Upload Section -->
-        <h3 class="section-title">6. Photo & Signature Upload</h3>
-        <p class="section-subtitle">Upload your recent passport photo and clear handwritten signature on white paper.</p>
+      <!-- SECTION 6: FILE UPLOADS (PHOTO & SIGNATURE) -->
+      <fieldset class="form-section">
+        <legend>6. Identity Document Uploads</legend>
+        <p class="section-subtext">Upload your recent passport photo and clear handwritten signature on white paper.</p>
         
-        <div class="upload-grid">
-          <div class="upload-box">
-            <label>Passport Photo (Colour)</label>
-            <input type="file" id="photoInput" accept="image/jpeg,image/png" onchange="processSelectedImage(event, 'photo')">
-            <img id="photoThumb" class="preview-thumb" alt="Photo Preview">
-            <span id="photoSizeTag" class="size-indicator"></span>
+        <div class="upload-container">
+          <!-- Passport Photo Drop Box -->
+          <div class="upload-card">
+            <h4>Passport Photo (Colour) <span class="req">*</span></h4>
+            <div class="upload-dropzone" id="photoDropzone">
+              <input type="file" id="photoInput" accept="image/jpeg,image/png" required>
+            </div>
+            <div id="photoPreviewBox" class="img-preview hidden">
+              <img id="photoPreview" alt="Photo Preview">
+            </div>
           </div>
 
-          <div class="upload-box">
-            <label>Signature (Black / Blue Ink)</label>
-            <input type="file" id="signInput" accept="image/jpeg,image/png" onchange="processSelectedImage(event, 'sign')">
-            <img id="signThumb" class="preview-thumb" alt="Signature Preview">
-            <span id="signSizeTag" class="size-indicator"></span>
-          </div>
-
-          <div class="upload-box card-preview-box">
-            <label>Generated Photo-Signature ID Card</label>
-            <img id="combinedThumb" class="preview-card-thumb" alt="Combined Card Preview">
-            <span id="combinedSizeTag" class="size-indicator"></span>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button type="submit" class="btn btn-primary">Review & Generate A4 Document Preview</button>
-        </div>
-      </form>
-    </section>
-
-    <!-- Stage 3: A4 Printable Document Preview -->
-    <section id="previewCard" class="card preview-wrapper" style="display: none;">
-      <div class="screen-notice">
-        Review your complete registration record. Click <strong>Confirm & Submit Application</strong> below to save your details to the university admissions database and generate your final printable sheet.
-      </div>
-
-      <!-- Formal A4 Printable Document -->
-      <div id="printableA4Doc" class="a4-document">
-        
-        <div class="doc-header">
-          <h2 class="univ-title">VASIREDDY VENKATADRI INTERNATIONAL TECHNOLOGICAL UNIVERSITY</h2>
-          <p class="doc-subtitle">STUDENT REGISTRATION & ENROLLMENT RECORD — 2026</p>
-        </div>
-
-        <!-- Section 1 & Photo-Signature Grid -->
-        <div class="top-composite-grid">
-          <div class="id-table-wrapper">
-            <table class="doc-table compact-table">
-              <tbody>
-                <tr>
-                  <td class="lbl">Enrollment No:</td>
-                  <td class="val" id="pEnrollmentNo"></td>
-                  <td class="lbl">Admission No:</td>
-                  <td class="val" id="pAdmissionNo"></td>
-                </tr>
-                <tr>
-                  <td class="lbl">Programme:</td>
-                  <td class="val" id="pProgramme"></td>
-                  <td class="lbl">Section:</td>
-                  <td class="val" id="pSection"></td>
-                </tr>
-                <tr>
-                  <td class="lbl">Admission Type:</td>
-                  <td class="val" id="pAdmissionType"></td>
-                  <td class="lbl">Rank / HT No:</td>
-                  <td class="val" id="pRankHtNo"></td>
-                </tr>
-                <tr>
-                  <td class="lbl">Fee Reimb.:</td>
-                  <td class="val" id="pFeeReimb"></td>
-                  <td class="lbl">APAAR ID:</td>
-                  <td class="val" id="pApaarId"></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="id-card-display-wrapper">
-            <img id="pCombinedCardImg" class="composite-card-img" alt="Photo & Signature Card">
+          <!-- Signature Drop Box -->
+          <div class="upload-card">
+            <h4>Signature (Black / Blue Ink) <span class="req">*</span></h4>
+            <div class="upload-dropzone" id="signDropzone">
+              <input type="file" id="signInput" accept="image/jpeg,image/png" required>
+            </div>
+            <div id="signPreviewBox" class="img-preview hidden">
+              <img id="signPreview" alt="Signature Preview">
+            </div>
           </div>
         </div>
+      </fieldset>
 
-        <!-- Section 2: Personal Profile -->
-        <h4 class="doc-sec-heading">2. Personal Information</h4>
-        <table class="doc-table">
-          <tbody>
-            <tr>
-              <td class="lbl">Full Name (SSC):</td>
-              <td class="val" id="pNameSsc"></td>
-              <td class="lbl">Gender:</td>
-              <td class="val" id="pGender"></td>
-            </tr>
-            <tr>
-              <td class="lbl">Date of Birth:</td>
-              <td class="val" id="pDob"></td>
-              <td class="lbl">Blood Group:</td>
-              <td class="val" id="pBloodGroup"></td>
-            </tr>
-            <tr>
-              <td class="lbl">Mobile Number:</td>
-              <td class="val" id="pStudentMobile"></td>
-              <td class="lbl">Email Address:</td>
-              <td class="val" id="pStudentEmail"></td>
-            </tr>
-            <tr>
-              <td class="lbl">Category (Caste):</td>
-              <td class="val" id="pCategoryCaste"></td>
-              <td class="lbl">Aadhaar Number:</td>
-              <td class="val" id="pStudentAadhaar"></td>
-            </tr>
-            <tr>
-              <td class="lbl">ID Mark 1:</td>
-              <td class="val" id="pIdMark1"></td>
-              <td class="lbl">ID Mark 2:</td>
-              <td class="val" id="pIdMark2"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Section 3: Educational Qualifications -->
-        <h4 class="doc-sec-heading">3. Educational Qualifications</h4>
-        <table class="doc-table">
-          <tbody>
-            <tr>
-              <td class="lbl">SSC Regd No:</td>
-              <td class="val" id="pSscRegd"></td>
-              <td class="lbl">SSC Marks / %:</td>
-              <td class="val" id="pSscMarks"></td>
-            </tr>
-            <tr>
-              <td class="lbl">Inter Regd No:</td>
-              <td class="val" id="pInterRegd"></td>
-              <td class="lbl">Inter Marks / %:</td>
-              <td class="val" id="pInterMarks"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Section 4: Parent / Guardian Details -->
-        <h4 class="doc-sec-heading">4. Parent / Guardian Details</h4>
-        <table class="doc-table">
-          <tbody>
-            <tr>
-              <td class="lbl">Father's Name:</td>
-              <td class="val" id="pFatherName"></td>
-              <td class="lbl">Father's Mobile:</td>
-              <td class="val" id="pFatherMobile"></td>
-            </tr>
-            <tr>
-              <td class="lbl">Father Occupation:</td>
-              <td class="val" id="pFatherOcc"></td>
-              <td class="lbl">Father Aadhaar:</td>
-              <td class="val" id="pFatherAadhaar"></td>
-            </tr>
-            <tr>
-              <td class="lbl">Mother's Name:</td>
-              <td class="val" id="pMotherName"></td>
-              <td class="lbl">Mother's Mobile:</td>
-              <td class="val" id="pMotherMobile"></td>
-            </tr>
-            <tr>
-              <td class="lbl">Mother Occupation:</td>
-              <td class="val" id="pMotherOcc"></td>
-              <td class="lbl">Mother Aadhaar:</td>
-              <td class="val" id="pMotherAadhaar"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Section 5: Residence & Campus Logistics -->
-        <h4 class="doc-sec-heading">5. Residence & Campus Logistics</h4>
-        <table class="doc-table">
-          <tbody>
-            <tr>
-              <td class="lbl">Permanent Address:</td>
-              <td class="val" colspan="3" id="pPermAddress"></td>
-            </tr>
-            <tr>
-              <td class="lbl">Current Address:</td>
-              <td class="val" colspan="3" id="pCurrAddress"></td>
-            </tr>
-            <tr>
-              <td class="lbl">Residential Status:</td>
-              <td class="val" id="pResStatus"></td>
-              <td class="lbl">Hostel / Commute:</td>
-              <td class="val" id="pLogisticsPoint"></td>
-            </tr>
-            <tr>
-              <td class="lbl">Co-Curricular / Sports:</td>
-              <td class="val" id="pCoCurricular"></td>
-              <td class="lbl">NCC / NSS:</td>
-              <td class="val" id="pNccNss"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Declaration -->
-        <p class="declaration-text">
-          Student Declaration: I hereby declare that all information furnished in this registration record is true, complete, and accurate. In the event of any discrepancies, my admission remains subject to institutional regulations.
-        </p>
+      <div class="form-actions">
+        <button type="submit" id="btnSubmit" class="btn-success">Submit Application</button>
       </div>
 
-      <!-- Preview Action Buttons -->
-      <div class="actions preview-actions">
-        <button class="btn btn-secondary" onclick="closePreviewToEdit()">Edit Form Details</button>
-        <button id="finalSubmitBtn" class="btn btn-success" onclick="submitApplicationToCloud()">Confirm & Submit Application</button>
-      </div>
-
-      <div id="submissionStatus" class="submission-status-msg" style="display:none;"></div>
-
-      <!-- Post-Submission Final Printing -->
-      <div id="postSubmitActions" class="post-actions" style="display:none;">
-        <button class="btn btn-primary" onclick="window.print()">Print A4 Form / Save PDF</button>
-      </div>
-    </section>
-
-  </main>
+    </form>
+  </div>
 
   <script src="app.js"></script>
 </body>
