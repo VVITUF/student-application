@@ -4,12 +4,84 @@
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwIX5jqnxsYTwz3we0fwBvjkGHhdtQ5kkoaxISIO1tZj-AXW4JmIldF7o5xVUQVu4cs/exec";
 
+// Master list of 124 College Bus Boarding Points
+const BUS_STOPS = [
+  "Amaravathi", "Pedaparimi", "Thulluru", "Namburu", "Chowdavaram", "Lal Puram",
+  "Chilakaluripet (54KM)", "China Kakani", "Kaza", "Mangalagiri Bypass",
+  "MGL Rajive Centre", "MGL Galigopuram", "MGL Bus Stand", "MGL Old Bus Stand",
+  "MGL Anjaneya Swamy Temple", "Yarrabalem", "Nallapadu", "Perecharla",
+  "Phirangipuram", "Nudurupadu", "Medikonduru", "Bhiminenivaripalem",
+  "Visadala X Roads", "Kunchena Palli", "Halfpeta", "Kolakaluru", "Nandivelugu",
+  "Kollipara", "Takkellapadu", "Tenali", "Kolluru (44KM)", "Revendrapadu",
+  "Tummapudi", "Nuthakki", "Peda Vadlapudi", "Duggirala", "Etukuru",
+  "Foundary centre -VJW", "Bhavanipuram -VJW", "Vijaya Takies (Eluru Road)-",
+  "VJW Chuttugunta-VJW", "Veternary Hospital-VJW", "Benz Circle-VJW",
+  "Varadhi-VJW", "Tadepalli", "Tadikonda", "Lam", "Peda Kakani", "Pedanandi Padu",
+  "Prathipadu", "Pulladigunta", "Kantheru", "Narakoduru", "Yadlapadu",
+  "Kantheru ‘X’ Road", "Uppalapadu", "Venkata Krishna Puram", "Cherukupalli",
+  "Ibrahimpatnam", "Sattenapalli", "Penamaluru", "Narasaraopet", "SVN Colony-GNT",
+  "Gujjangundla-GNT", "Potthuru-GNT", "SriRam Township-GNT",
+  "Hanumaiah Circle/LIC Colony-GNT", "Stambalagaruvu-GNT", "RTO Ojce (Old)-GNT",
+  "Pattabhipuram Petrol Bunk-GNT", "Syamala Nagar-GNT", "Recruitment Ojce-GNT",
+  "Swamy Theatre-GNT", "Collector Ojce-GNT", "Nagarampalem-GNT",
+  "Stall Girls High School-GNT", "Bommidala Kalyana Mandapam-GNT",
+  "Navabharath Nagar-GNT", "Vidya Nagar 1st Line-GNT", "Saibaba Road-GNT",
+  "Koritepadu Kollaform-GNT", "Gandhi Bomma-GNT", "Rajendra Nagar-GNT",
+  "Brundavan Gardens-GNT", "Sitaramaiah High School-GNT", "Nayar Hotal -GNT",
+  "Bakers Fun-GNT", "Lakshmipuram Milk Booth-GNT", "Union Bank-GNT",
+  "Housing Board Colony(Janatha Bazar)-GNT", "Mahatma Gandhi College-GNT",
+  "A T Agraharam-GNT", "Chuttugunta-GNT", "ITC-GNT", "Vijaya Lakshmi Theatre-GNT",
+  "Venkateswara Swamy Temple(Gorantla)-GNT", "Nagaralu-GNT",
+  "Medical College Hostel-GNT", "Rama Buildings-GNT", "Lodge Centre-GNT",
+  "Sankar Vilas-GNT", "Naaz Centre-GNT", "Kothapet (Bhagathsing Bomma)-GNT",
+  "Bose Bomma-GNT", "Old Club Road (Opp. Bus Stand)-", "GNT Market-GNT",
+  "Old Bus Stand -GNT", "B. R. Stadium-GNT", "Mani Hotel Centre ( Old Guntur)",
+  "Bus Stand-GNT", "Manipuram Gate-GNT", "Ammavari Temple -GNT", "Auto Nagar-GNT",
+  "Peda Palakaluru", "Ponnur", "Chebrolu", "Budampadu", "Raveli Via Ponnekallu",
+  "Sekuru Via Narakoduru", "Chiluvuru", "Koppuravuru", "Nunna", "Gannavaram",
+  "Bapatla"
+];
+
 let activeStudent = null;
 let photoRawImg = null;
 let signRawImg = null;
 let compressedPhotoBase64 = null;
 let compressedSignBase64 = null;
 let combinedCardBase64 = null;
+
+// Populate Bus Stops & Setup Input Guards on DOM Load
+document.addEventListener("DOMContentLoaded", function () {
+  populateBusStopsDropdown();
+
+  // Enforce whole numbers on Marks fields
+  const sscMarksInput = document.getElementById("fieldSscMarks");
+  const interMarksInput = document.getElementById("fieldInterMarks");
+
+  if (sscMarksInput) {
+    sscMarksInput.addEventListener("input", function () {
+      this.value = this.value.replace(/[^0-9]/g, "");
+    });
+  }
+
+  if (interMarksInput) {
+    interMarksInput.addEventListener("input", function () {
+      this.value = this.value.replace(/[^0-9]/g, "");
+    });
+  }
+});
+
+function populateBusStopsDropdown() {
+  const busSelect = document.getElementById("fieldBusStop");
+  if (!busSelect) return;
+
+  busSelect.innerHTML = '<option value="">Select Boarding Point</option>';
+  BUS_STOPS.forEach(stop => {
+    const opt = document.createElement("option");
+    opt.value = stop;
+    opt.textContent = stop;
+    busSelect.appendChild(opt);
+  });
+}
 
 // ================= STAGE 1: AUTHENTICATION =================
 async function handleAuthVerification() {
@@ -73,12 +145,18 @@ async function handleAuthVerification() {
 }
 
 function populateExistingForm(d) {
-  if (d.Student_Name_SSC) document.getElementById("fieldNameSsc").value = d.Student_Name_SSC;
+  // Accommodates both updated and legacy header naming
+  const sscName = d.Student_Name_SSC_CBSE_ICSE || d.Student_Name_SSC;
+  if (sscName) document.getElementById("fieldNameSsc").value = sscName;
+
   if (d.Gender) document.getElementById("fieldGender").value = d.Gender;
   if (d.DOB) document.getElementById("fieldDob").value = d.DOB;
   if (d.Blood_Group) document.getElementById("fieldBloodGroup").value = d.Blood_Group;
   if (d.Category) document.getElementById("fieldCategory").value = d.Category;
-  if (d.Caste) document.getElementById("fieldCaste").value = d.Caste;
+
+  const subCaste = d.Sub_Caste || d.Caste;
+  if (subCaste) document.getElementById("fieldCaste").value = subCaste;
+
   if (d.Student_Mobile) document.getElementById("fieldStudentMobile").value = d.Student_Mobile;
   if (d.Student_Email) document.getElementById("fieldStudentEmail").value = d.Student_Email;
   if (d.Student_Aadhaar) document.getElementById("fieldStudentAadhaar").value = d.Student_Aadhaar;
@@ -86,9 +164,15 @@ function populateExistingForm(d) {
   if (d.Identification_Mark_1) document.getElementById("fieldIdMark1").value = d.Identification_Mark_1;
   if (d.Identification_Mark_2) document.getElementById("fieldIdMark2").value = d.Identification_Mark_2;
 
-  if (d.SSC_Regd_No) document.getElementById("fieldSscRegd").value = d.SSC_Regd_No;
-  if (d.SSC_Marks) document.getElementById("fieldSscMarks").value = d.SSC_Marks;
-  if (d.SSC_Percentage) document.getElementById("fieldSscPercent").value = d.SSC_Percentage;
+  const sscRegd = d.SSC_CBSE_ICSE_Regd_No || d.SSC_Regd_No;
+  if (sscRegd) document.getElementById("fieldSscRegd").value = sscRegd;
+
+  const sscMarks = d.SSC_CBSE_ICSE_Marks || d.SSC_Marks;
+  if (sscMarks) document.getElementById("fieldSscMarks").value = sscMarks;
+
+  const sscPercent = d.SSC_CBSE_ICSE_Percentage || d.SSC_Percentage;
+  if (sscPercent) document.getElementById("fieldSscPercent").value = sscPercent;
+
   if (d.Inter_Regd_No) document.getElementById("fieldInterRegd").value = d.Inter_Regd_No;
   if (d.Inter_Marks) document.getElementById("fieldInterMarks").value = d.Inter_Marks;
   if (d.Inter_Percentage) document.getElementById("fieldInterPercent").value = d.Inter_Percentage;
@@ -110,7 +194,9 @@ function populateExistingForm(d) {
   if (d.Current_District) document.getElementById("fieldCurrDistrict").value = d.Current_District;
   if (d.Current_Pincode) document.getElementById("fieldCurrPincode").value = d.Current_Pincode;
 
-  if (d.Co_Curricular) document.getElementById("fieldCoCurricular").value = d.Co_Curricular;
+  const coCurr = d.Extra_Curricular_Activities || d.Co_Curricular;
+  if (coCurr) document.getElementById("fieldCoCurricular").value = coCurr;
+
   if (d.NCC_NSS) document.getElementById("fieldNccNss").value = d.NCC_NSS;
   if (d.Admission_Type) document.getElementById("fieldAdmissionType").value = d.Admission_Type;
   if (d.Rank_HT_No) document.getElementById("fieldRankHtNo").value = d.Rank_HT_No;
@@ -124,7 +210,9 @@ function populateExistingForm(d) {
       document.getElementById("fieldCommuteMode").value = d.College_Travel_Mode;
       handleCommuteChange();
     }
-    if (d.Bus_Boarding_Point) document.getElementById("fieldBusStop").value = d.Bus_Boarding_Point;
+    if (d.Bus_Boarding_Point && d.Bus_Boarding_Point !== "NA") {
+      document.getElementById("fieldBusStop").value = d.Bus_Boarding_Point;
+    }
   }
 }
 
@@ -145,12 +233,12 @@ function handleResidenceChange() {
   const busGrp = document.getElementById("busStopGroup");
 
   if (status === "VVIT University Hostel") {
-    hostelGrp.style.display = "block";
-    commuteGrp.style.display = "none";
-    busGrp.style.display = "none";
+    if (hostelGrp) hostelGrp.style.display = "block";
+    if (commuteGrp) commuteGrp.style.display = "none";
+    if (busGrp) busGrp.style.display = "none";
   } else {
-    hostelGrp.style.display = "none";
-    commuteGrp.style.display = "block";
+    if (hostelGrp) hostelGrp.style.display = "none";
+    if (commuteGrp) commuteGrp.style.display = "block";
     handleCommuteChange();
   }
 }
@@ -158,7 +246,21 @@ function handleResidenceChange() {
 function handleCommuteChange() {
   const mode = document.getElementById("fieldCommuteMode").value;
   const busGrp = document.getElementById("busStopGroup");
-  busGrp.style.display = mode === "College Bus" ? "block" : "none";
+  const busSelect = document.getElementById("fieldBusStop");
+
+  if (mode === "College Bus") {
+    if (busGrp) busGrp.style.display = "block";
+    if (busSelect) {
+      busSelect.required = true;
+      if (busSelect.value === "NA") busSelect.value = "";
+    }
+  } else {
+    if (busGrp) busGrp.style.display = "none";
+    if (busSelect) {
+      busSelect.required = false;
+      busSelect.value = "NA";
+    }
+  }
 }
 
 // ================= CANVAS 30 KB IMAGE COMPRESSION & MERGING =================
@@ -307,15 +409,63 @@ function synthesizeCompositeCard() {
 
 // ================= STAGE 3: VALIDATION & A4 PREVIEW =================
 function validateIdentityInputs() {
+  const subCaste = document.getElementById("fieldCaste").value.trim();
+  const commuteMode = document.getElementById("fieldCommuteMode").value;
+  const busStop = document.getElementById("fieldBusStop").value;
+  const coCurricular = document.getElementById("fieldCoCurricular").value;
+  const nccNss = document.getElementById("fieldNccNss").value;
+
+  const sscMarks = document.getElementById("fieldSscMarks").value.trim();
+  const interMarks = document.getElementById("fieldInterMarks").value.trim();
+
+  // Validate Sub-Caste
+  if (!subCaste) {
+    alert("Error: Sub-Caste is mandatory. Please enter your sub-caste.");
+    document.getElementById("fieldCaste").focus();
+    return false;
+  }
+
+  // Validate Whole Numbers for Marks
+  if (!/^\d+$/.test(sscMarks)) {
+    alert("Error: SSC/CBSE/ICSE Marks must be a whole number.");
+    document.getElementById("fieldSscMarks").focus();
+    return false;
+  }
+  if (!/^\d+$/.test(interMarks)) {
+    alert("Error: Inter / Diploma Marks must be a whole number.");
+    document.getElementById("fieldInterMarks").focus();
+    return false;
+  }
+
+  // Validate Mandatory Commute & Logistics
+  if (!commuteMode) {
+    alert("Error: College Commute Mode is mandatory.");
+    document.getElementById("fieldCommuteMode").focus();
+    return false;
+  }
+  if (commuteMode === "College Bus" && (!busStop || busStop === "NA")) {
+    alert("Error: Please select your Bus Boarding Point / Stop.");
+    document.getElementById("fieldBusStop").focus();
+    return false;
+  }
+
+  // Validate Dropdowns
+  if (!coCurricular) {
+    alert("Error: Please select an option for Extra curricular Activities.");
+    document.getElementById("fieldCoCurricular").focus();
+    return false;
+  }
+  if (!nccNss) {
+    alert("Error: Please select an option for NCC / NSS Participation.");
+    document.getElementById("fieldNccNss").focus();
+    return false;
+  }
+
+  // Validate Mobile Numbers (10 Digits)
   const studentMobile = document.getElementById("fieldStudentMobile").value.trim();
   const fatherMobile = document.getElementById("fieldFatherMobile").value.trim();
   const motherMobile = document.getElementById("fieldMotherMobile").value.trim();
 
-  const studentAadhaar = document.getElementById("fieldStudentAadhaar").value.trim();
-  const fatherAadhaar = document.getElementById("fieldFatherAadhaar").value.trim();
-  const motherAadhaar = document.getElementById("fieldMotherAadhaar").value.trim();
-
-  // Validate 10-digit mobile numbers
   if (!/^\d{10}$/.test(studentMobile)) {
     alert("Error: Student Mobile Number must be exactly 10 numeric digits.");
     document.getElementById("fieldStudentMobile").focus();
@@ -332,7 +482,11 @@ function validateIdentityInputs() {
     return false;
   }
 
-  // Validate 12-digit identity numbers
+  // Validate 12-Digit Government ID Numbers
+  const studentAadhaar = document.getElementById("fieldStudentAadhaar").value.trim();
+  const fatherAadhaar = document.getElementById("fieldFatherAadhaar").value.trim();
+  const motherAadhaar = document.getElementById("fieldMotherAadhaar").value.trim();
+
   if (!/^\d{12}$/.test(studentAadhaar)) {
     alert("Error: Student Aadhaar Number must be exactly 12 numeric digits.");
     document.getElementById("fieldStudentAadhaar").focus();
@@ -362,7 +516,7 @@ function generateAndShowA4Preview() {
     return;
   }
 
-  // Populate A4 Sheet
+  // Populate A4 Preview Sheet
   document.getElementById("pEnrollmentNo").innerText = document.getElementById("fieldEnrollmentNo").value;
   document.getElementById("pAdmissionNo").innerText = document.getElementById("fieldAdmissionNo").value;
   document.getElementById("pProgramme").innerText = document.getElementById("fieldProgramme").value;
@@ -379,22 +533,21 @@ function generateAndShowA4Preview() {
   document.getElementById("pStudentMobile").innerText = document.getElementById("fieldStudentMobile").value;
   document.getElementById("pStudentEmail").innerText = document.getElementById("fieldStudentEmail").value;
   document.getElementById("pCategoryCaste").innerText = `${document.getElementById("fieldCategory").value} (${document.getElementById("fieldCaste").value || "N/A"})`;
-  
-  // Render identity numbers in preview
+
   document.getElementById("pStudentAadhaar").innerText = document.getElementById("fieldStudentAadhaar").value.trim();
   document.getElementById("pIdMark1").innerText = document.getElementById("fieldIdMark1").value || "N/A";
   document.getElementById("pIdMark2").innerText = document.getElementById("fieldIdMark2").value || "N/A";
 
   document.getElementById("pSscRegd").innerText = document.getElementById("fieldSscRegd").value;
-  document.getElementById("pSscMarks").innerText = `${document.getElementById("fieldSscMarks").value} (${document.getElementById("fieldSscPercent").value})`;
+  document.getElementById("pSscMarks").innerText = `${document.getElementById("fieldSscMarks").value} (${document.getElementById("fieldSscPercent").value}%)`;
   document.getElementById("pInterRegd").innerText = document.getElementById("fieldInterRegd").value;
-  document.getElementById("pInterMarks").innerText = `${document.getElementById("fieldInterMarks").value} (${document.getElementById("fieldInterPercent").value})`;
+  document.getElementById("pInterMarks").innerText = `${document.getElementById("fieldInterMarks").value} (${document.getElementById("fieldInterPercent").value}%)`;
 
   document.getElementById("pFatherName").innerText = document.getElementById("fieldFatherName").value;
   document.getElementById("pFatherMobile").innerText = document.getElementById("fieldFatherMobile").value;
   document.getElementById("pFatherOcc").innerText = document.getElementById("fieldFatherOcc").value || "N/A";
   document.getElementById("pFatherAadhaar").innerText = document.getElementById("fieldFatherAadhaar").value.trim();
-  
+
   document.getElementById("pMotherName").innerText = document.getElementById("fieldMotherName").value;
   document.getElementById("pMotherMobile").innerText = document.getElementById("fieldMotherMobile").value || "N/A";
   document.getElementById("pMotherOcc").innerText = document.getElementById("fieldMotherOcc").value || "N/A";
@@ -405,11 +558,14 @@ function generateAndShowA4Preview() {
 
   const resStatus = document.getElementById("fieldResidentialStatus").value;
   document.getElementById("pResStatus").innerText = resStatus;
-  document.getElementById("pLogisticsPoint").innerText = resStatus === "VVIT University Hostel" 
-    ? `Hostel (${document.getElementById("fieldHostelSharing").value})`
-    : `${document.getElementById("fieldCommuteMode").value} - ${document.getElementById("fieldBusStop").value || "Local Commute"}`;
 
-  document.getElementById("pCoCurricular").innerText = document.getElementById("fieldCoCurricular").value || "None";
+  const commuteMode = document.getElementById("fieldCommuteMode").value;
+  const busStop = document.getElementById("fieldBusStop").value;
+  document.getElementById("pLogisticsPoint").innerText = resStatus === "VVIT University Hostel"
+    ? `Hostel (${document.getElementById("fieldHostelSharing").value})`
+    : `${commuteMode} - ${commuteMode === "College Bus" ? busStop : "NA"}`;
+
+  document.getElementById("pCoCurricular").innerText = document.getElementById("fieldCoCurricular").value || "Not interested";
   document.getElementById("pNccNss").innerText = document.getElementById("fieldNccNss").value;
 
   document.getElementById("pCombinedCardImg").src = combinedCardBase64;
@@ -435,6 +591,9 @@ async function submitApplicationToCloud() {
   statusEl.style.color = "#2563eb";
   statusEl.innerText = "Submitting application and generating university records...";
 
+  const commuteMode = document.getElementById("fieldCommuteMode").value.trim();
+  const boardingStop = commuteMode === "College Bus" ? document.getElementById("fieldBusStop").value.trim() : "NA";
+
   const payload = {
     enrollmentNo: document.getElementById("fieldEnrollmentNo").value.trim(),
     admissionNo: document.getElementById("fieldAdmissionNo").value.trim(),
@@ -450,7 +609,7 @@ async function submitApplicationToCloud() {
     dob: document.getElementById("fieldDob").value.trim(),
     bloodGroup: document.getElementById("fieldBloodGroup").value.trim(),
     category: document.getElementById("fieldCategory").value.trim(),
-    caste: document.getElementById("fieldCaste").value.trim(),
+    caste: document.getElementById("fieldCaste").value.trim(), // Sub-Caste
     studentMobile: document.getElementById("fieldStudentMobile").value.trim(),
     studentEmail: document.getElementById("fieldStudentEmail").value.trim(),
     studentAadhaar: document.getElementById("fieldStudentAadhaar").value.trim(),
@@ -481,12 +640,12 @@ async function submitApplicationToCloud() {
     currentDistrict: document.getElementById("fieldCurrDistrict").value.trim(),
     currentPincode: document.getElementById("fieldCurrPincode").value.trim(),
 
-    coCurricular: document.getElementById("fieldCoCurricular").value.trim(),
-    nccNss: document.getElementById("fieldNccNss").value.trim(),
+    coCurricular: document.getElementById("fieldCoCurricular").value.trim(), // Clubs / Sports / Not interested
+    nccNss: document.getElementById("fieldNccNss").value.trim(),             // None / NCC / NSS
     residentialStatus: document.getElementById("fieldResidentialStatus").value.trim(),
-    hostelSharing: document.getElementById("fieldHostelSharing").value.trim(),
-    collegeTravelMode: document.getElementById("fieldCommuteMode").value.trim(),
-    busBoardingPoint: document.getElementById("fieldBusStop").value.trim(),
+    hostelSharing: document.getElementById("fieldHostelSharing") ? document.getElementById("fieldHostelSharing").value.trim() : "",
+    collegeTravelMode: commuteMode,
+    busBoardingPoint: boardingStop,
 
     photo: compressedPhotoBase64,
     signature: compressedSignBase64,
@@ -505,8 +664,11 @@ async function submitApplicationToCloud() {
       statusEl.style.color = "#16a34a";
       statusEl.innerHTML = `✓ Application Saved & PDF Backup Created for ${result.regdNo}!`;
       submitBtn.style.display = "none";
-      document.querySelector(".screen-notice").style.display = "none";
-      document.querySelector(".preview-actions button:first-child").style.display = "none";
+      if (document.querySelector(".screen-notice")) {
+        document.querySelector(".screen-notice").style.display = "none";
+      }
+      const editBtn = document.querySelector(".preview-actions button:first-child");
+      if (editBtn) editBtn.style.display = "none";
 
       postActions.style.display = "flex";
 
