@@ -49,11 +49,10 @@ let compressedPhotoBase64 = null;
 let compressedSignBase64 = null;
 let combinedCardBase64 = null;
 
-// Populate Bus Stops & Setup Input Guards on DOM Load
 document.addEventListener("DOMContentLoaded", function () {
   populateBusStopsDropdown();
 
-  // Enforce whole numbers on Marks fields
+  // Enforce whole numbers on marks inputs
   const sscMarksInput = document.getElementById("fieldSscMarks");
   const interMarksInput = document.getElementById("fieldInterMarks");
 
@@ -85,67 +84,82 @@ function populateBusStopsDropdown() {
 
 // ================= STAGE 1: AUTHENTICATION =================
 async function handleAuthVerification() {
-  const regd = document.getElementById("authRegdNo").value.trim().toUpperCase();
-  const adm = document.getElementById("authAdmNo").value.trim().toUpperCase();
-  const sec = document.getElementById("authSection").value.trim().toUpperCase();
+  const regdEl = document.getElementById("authRegdNo");
+  const admEl  = document.getElementById("authAdmNo");
+  const secEl  = document.getElementById("authSection");
   const alertEl = document.getElementById("authAlert");
   const btn = document.getElementById("authBtn");
 
-  alertEl.style.display = "none";
+  if (alertEl) alertEl.style.display = "none";
+
+  const regd = regdEl ? regdEl.value.trim().toUpperCase() : "";
+  const adm = admEl ? admEl.value.trim().toUpperCase() : "";
+  const sec = secEl ? secEl.value.trim().toUpperCase() : "";
 
   if (!regd || !adm || !sec) {
-    alertEl.innerText = "Please enter Registration Number, Admission Number, and select Section.";
-    alertEl.style.display = "block";
+    if (alertEl) {
+      alertEl.innerText = "Please enter Regd. Number, Admission Number, and select Section.";
+      alertEl.style.display = "block";
+    }
     return;
   }
 
-  btn.disabled = true;
-  btn.innerText = "Verifying...";
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = "Verifying...";
+  }
 
   try {
     const url = `${SCRIPT_URL}?action=lookup&regdNo=${encodeURIComponent(regd)}&admissionNo=${encodeURIComponent(adm)}&section=${encodeURIComponent(sec)}`;
     const res = await fetch(url);
     const data = await res.json();
 
-    if (data && data.status === "found") {
+    if (data && (data.status === "found" || data.matched === true || data.status === "success")) {
       activeStudent = data;
 
-      // Update Welcome Header
       const welcomeBanner = document.getElementById("welcomeBanner");
-      document.getElementById("welcomeNameText").innerText = `Welcome, ${data.officialName}`;
-      welcomeBanner.style.display = "block";
+      const welcomeNameText = document.getElementById("welcomeNameText");
+      if (welcomeNameText) welcomeNameText.innerText = `Welcome, ${data.officialName || "Student"}`;
+      if (welcomeBanner) welcomeBanner.style.display = "block";
 
-      // Pre-fill verified credentials
-      document.getElementById("fieldEnrollmentNo").value = data.regdNo;
-      document.getElementById("fieldAdmissionNo").value = data.admissionNo;
-      document.getElementById("fieldSection").value = data.section;
-      if (data.officialName) {
-        document.getElementById("fieldNameSsc").value = data.officialName;
-      }
+      const fieldEnrollment = document.getElementById("fieldEnrollmentNo");
+      const fieldAdm = document.getElementById("fieldAdmissionNo");
+      const fieldSec = document.getElementById("fieldSection");
+      const fieldName = document.getElementById("fieldNameSsc");
 
-      // Populate previous fields if editing an existing record
+      if (fieldEnrollment) fieldEnrollment.value = data.regdNo || regd;
+      if (fieldAdm) fieldAdm.value = data.admissionNo || adm;
+      if (fieldSec) fieldSec.value = data.section || sec;
+      if (fieldName && data.officialName) fieldName.value = data.officialName;
+
       if (data.isExisting && data.previousData) {
         populateExistingForm(data.previousData);
       }
 
-      // Transition views
-      document.getElementById("authCard").style.display = "none";
-      document.getElementById("formCard").style.display = "block";
+      const authCard = document.getElementById("authCard");
+      const formCard = document.getElementById("formCard");
+      if (authCard) authCard.style.display = "none";
+      if (formCard) formCard.style.display = "block";
     } else {
-      alertEl.innerText = data.message || "No match found. Please verify your Regd No, Admission No, and Section.";
-      alertEl.style.display = "block";
+      if (alertEl) {
+        alertEl.innerText = data.message || "No match found. Please verify your Regd No, Admission No, and Section.";
+        alertEl.style.display = "block";
+      }
     }
   } catch (err) {
-    alertEl.innerText = "Network / Verification error. Please check your connection.";
-    alertEl.style.display = "block";
+    if (alertEl) {
+      alertEl.innerText = `Verification error: ${err.message}. Please check network connection.`;
+      alertEl.style.display = "block";
+    }
   } finally {
-    btn.disabled = false;
-    btn.innerText = "Verify & Proceed";
+    if (btn) {
+      btn.disabled = false;
+      btn.innerText = "Verify & Proceed";
+    }
   }
 }
 
 function populateExistingForm(d) {
-  // Accommodates both updated and legacy header naming
   const sscName = d.Student_Name_SSC_CBSE_ICSE || d.Student_Name_SSC;
   if (sscName) document.getElementById("fieldNameSsc").value = sscName;
 
@@ -338,7 +352,6 @@ function synthesizeCompositeCard() {
   ctx.fillStyle = "#FFFFFF";
   ctx.fillRect(0, 0, totalW, totalH);
 
-  // Draw Photo
   const pScale = Math.max(totalW / photoRawImg.width, photoH / photoRawImg.height);
   const drawW = photoRawImg.width * pScale;
   const drawH = photoRawImg.height * pScale;
@@ -351,7 +364,6 @@ function synthesizeCompositeCard() {
   ctx.drawImage(photoRawImg, drawX, 0, drawW, drawH);
   ctx.restore();
 
-  // Draw Divider
   ctx.strokeStyle = "#000000";
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -359,7 +371,6 @@ function synthesizeCompositeCard() {
   ctx.lineTo(totalW, photoH);
   ctx.stroke();
 
-  // Draw Signature
   const maxSignW = totalW - 40;
   const maxSignH = signH - 18;
   const sScale = Math.min(maxSignW / signRawImg.width, maxSignH / signRawImg.height);
@@ -370,12 +381,10 @@ function synthesizeCompositeCard() {
 
   ctx.drawImage(signRawImg, sX, sY, sW, sH);
 
-  // Outer Border
   ctx.strokeStyle = "#000000";
   ctx.lineWidth = 2.5;
   ctx.strokeRect(1, 1, totalW - 2, totalH - 2);
 
-  // Dynamic 31-34 KB Compression Loop
   const MAX_BYTES = 34816;
   const MIN_BYTES = 31744;
   let quality = 0.88;
@@ -418,14 +427,12 @@ function validateIdentityInputs() {
   const sscMarks = document.getElementById("fieldSscMarks").value.trim();
   const interMarks = document.getElementById("fieldInterMarks").value.trim();
 
-  // Validate Sub-Caste
   if (!subCaste) {
     alert("Error: Sub-Caste is mandatory. Please enter your sub-caste.");
     document.getElementById("fieldCaste").focus();
     return false;
   }
 
-  // Validate Whole Numbers for Marks
   if (!/^\d+$/.test(sscMarks)) {
     alert("Error: SSC/CBSE/ICSE Marks must be a whole number.");
     document.getElementById("fieldSscMarks").focus();
@@ -437,7 +444,6 @@ function validateIdentityInputs() {
     return false;
   }
 
-  // Validate Mandatory Commute & Logistics
   if (!commuteMode) {
     alert("Error: College Commute Mode is mandatory.");
     document.getElementById("fieldCommuteMode").focus();
@@ -449,7 +455,6 @@ function validateIdentityInputs() {
     return false;
   }
 
-  // Validate Dropdowns
   if (!coCurricular) {
     alert("Error: Please select an option for Extra curricular Activities.");
     document.getElementById("fieldCoCurricular").focus();
@@ -461,7 +466,6 @@ function validateIdentityInputs() {
     return false;
   }
 
-  // Validate Mobile Numbers (10 Digits)
   const studentMobile = document.getElementById("fieldStudentMobile").value.trim();
   const fatherMobile = document.getElementById("fieldFatherMobile").value.trim();
   const motherMobile = document.getElementById("fieldMotherMobile").value.trim();
@@ -482,7 +486,6 @@ function validateIdentityInputs() {
     return false;
   }
 
-  // Validate 12-Digit Government ID Numbers
   const studentAadhaar = document.getElementById("fieldStudentAadhaar").value.trim();
   const fatherAadhaar = document.getElementById("fieldFatherAadhaar").value.trim();
   const motherAadhaar = document.getElementById("fieldMotherAadhaar").value.trim();
@@ -516,7 +519,6 @@ function generateAndShowA4Preview() {
     return;
   }
 
-  // Populate A4 Preview Sheet
   document.getElementById("pEnrollmentNo").innerText = document.getElementById("fieldEnrollmentNo").value;
   document.getElementById("pAdmissionNo").innerText = document.getElementById("fieldAdmissionNo").value;
   document.getElementById("pProgramme").innerText = document.getElementById("fieldProgramme").value;
@@ -580,7 +582,7 @@ function closePreviewToEdit() {
   document.getElementById("formCard").style.display = "block";
 }
 
-// ================= STAGE 4: CLOUD SUBMISSION & PERSISTENCE =================
+// ================= STAGE 4: CLOUD SUBMISSION =================
 async function submitApplicationToCloud() {
   const submitBtn = document.getElementById("finalSubmitBtn");
   const statusEl = document.getElementById("submissionStatus");
@@ -609,7 +611,7 @@ async function submitApplicationToCloud() {
     dob: document.getElementById("fieldDob").value.trim(),
     bloodGroup: document.getElementById("fieldBloodGroup").value.trim(),
     category: document.getElementById("fieldCategory").value.trim(),
-    caste: document.getElementById("fieldCaste").value.trim(), // Sub-Caste
+    caste: document.getElementById("fieldCaste").value.trim(),
     studentMobile: document.getElementById("fieldStudentMobile").value.trim(),
     studentEmail: document.getElementById("fieldStudentEmail").value.trim(),
     studentAadhaar: document.getElementById("fieldStudentAadhaar").value.trim(),
@@ -640,8 +642,8 @@ async function submitApplicationToCloud() {
     currentDistrict: document.getElementById("fieldCurrDistrict").value.trim(),
     currentPincode: document.getElementById("fieldCurrPincode").value.trim(),
 
-    coCurricular: document.getElementById("fieldCoCurricular").value.trim(), // Clubs / Sports / Not interested
-    nccNss: document.getElementById("fieldNccNss").value.trim(),             // None / NCC / NSS
+    coCurricular: document.getElementById("fieldCoCurricular").value.trim(),
+    nccNss: document.getElementById("fieldNccNss").value.trim(),
     residentialStatus: document.getElementById("fieldResidentialStatus").value.trim(),
     hostelSharing: document.getElementById("fieldHostelSharing") ? document.getElementById("fieldHostelSharing").value.trim() : "",
     collegeTravelMode: commuteMode,
@@ -672,7 +674,6 @@ async function submitApplicationToCloud() {
 
       postActions.style.display = "flex";
 
-      // Trigger instant browser print dialog
       window.print();
     } else {
       throw new Error(result ? result.message : "Submission rejected");
