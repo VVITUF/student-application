@@ -51,23 +51,55 @@ let combinedCardBase64 = null;
 
 document.addEventListener("DOMContentLoaded", function () {
   populateBusStopsDropdown();
-
-  // Enforce whole numbers on marks inputs
-  const sscMarksInput = document.getElementById("fieldSscMarks");
-  const interMarksInput = document.getElementById("fieldInterMarks");
-
-  if (sscMarksInput) {
-    sscMarksInput.addEventListener("input", function () {
-      this.value = this.value.replace(/[^0-9]/g, "");
-    });
-  }
-
-  if (interMarksInput) {
-    interMarksInput.addEventListener("input", function () {
-      this.value = this.value.replace(/[^0-9]/g, "");
-    });
-  }
+  populateDobDropdowns();
+  setupValidationGuards();
 });
+
+// Populate Days (1-31) and Years (1995-2015)
+function populateDobDropdowns() {
+  const daySelect = document.getElementById("dobDay");
+  const yearSelect = document.getElementById("dobYear");
+
+  if (daySelect && daySelect.options.length <= 1) {
+    for (let d = 1; d <= 31; d++) {
+      const opt = document.createElement("option");
+      const val = d < 10 ? `0${d}` : `${d}`;
+      opt.value = val;
+      opt.textContent = val;
+      daySelect.appendChild(opt);
+    }
+  }
+
+  if (yearSelect && yearSelect.options.length <= 1) {
+    for (let y = 2015; y >= 1995; y--) {
+      const opt = document.createElement("option");
+      opt.value = `${y}`;
+      opt.textContent = `${y}`;
+      yearSelect.appendChild(opt);
+    }
+  }
+
+  [daySelect, document.getElementById("dobMonth"), yearSelect].forEach(el => {
+    if (el) {
+      el.addEventListener("change", updateAssembledDob);
+    }
+  });
+}
+
+function updateAssembledDob() {
+  const d = document.getElementById("dobDay").value;
+  const m = document.getElementById("dobMonth").value;
+  const y = document.getElementById("dobYear").value;
+  const dobInput = document.getElementById("fieldDob");
+  const errEl = document.getElementById("err_dob");
+
+  if (d && m && y) {
+    dobInput.value = `${y}-${m}-${d}`;
+    if (errEl) errEl.classList.remove("visible");
+  } else {
+    dobInput.value = "";
+  }
+}
 
 function populateBusStopsDropdown() {
   const busSelect = document.getElementById("fieldBusStop");
@@ -80,6 +112,84 @@ function populateBusStopsDropdown() {
     opt.textContent = stop;
     busSelect.appendChild(opt);
   });
+}
+
+// Inline Digit Length & Format Validation
+function setupValidationGuards() {
+  // Mobile numbers (10 digits)
+  bindFieldValidator("fieldStudentMobile", 10, "Student Mobile must be exactly 10 digits.");
+  bindFieldValidator("fieldFatherMobile", 10, "Father's Mobile must be exactly 10 digits.");
+  bindFieldValidator("fieldMotherMobile", 10, "Mother's Mobile must be exactly 10 digits.", true);
+
+  // Identification numbers (12 digits)
+  bindFieldValidator("fieldStudentAadhaar", 12, "Student Identification must be exactly 12 digits.");
+  bindFieldValidator("fieldFatherAadhaar", 12, "Father's Identification must be exactly 12 digits.");
+  bindFieldValidator("fieldMotherAadhaar", 12, "Mother's Identification must be exactly 12 digits.");
+
+  // Marks inputs: numeric whole numbers only
+  ["fieldSscMarks", "fieldInterMarks"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, "");
+      });
+    }
+  });
+}
+
+function bindFieldValidator(fieldId, exactLength, errorMsg, isOptional = false) {
+  const el = document.getElementById(fieldId);
+  const errEl = document.getElementById(`err_${fieldId}`);
+  if (!el || !errEl) return;
+
+  // Real-time digit restriction
+  el.addEventListener("input", function () {
+    this.value = this.value.replace(/[^0-9]/g, "");
+    if (this.value.length === exactLength) {
+      errEl.classList.remove("visible");
+      el.classList.remove("input-invalid");
+    }
+  });
+
+  // Verify length on tab/blur
+  el.addEventListener("blur", function () {
+    const val = this.value.trim();
+    if (isOptional && val === "") {
+      errEl.classList.remove("visible");
+      el.classList.remove("input-invalid");
+      return;
+    }
+    if (val.length !== exactLength) {
+      errEl.innerText = errorMsg;
+      errEl.classList.add("visible");
+      el.classList.add("input-invalid");
+    } else {
+      errEl.classList.remove("visible");
+      el.classList.remove("input-invalid");
+    }
+  });
+}
+
+// Admission Type Conditional Logic
+function handleAdmissionTypeChange() {
+  const type = document.getElementById("fieldAdmissionType").value;
+  const htInput = document.getElementById("fieldRankHtNo");
+  const star = document.getElementById("htReqStar");
+  const errEl = document.getElementById("err_fieldRankHtNo");
+
+  if (type === "Convenor (EAPCET)") {
+    htInput.disabled = false;
+    htInput.required = true;
+    htInput.classList.remove("input-readonly");
+    if (star) star.style.display = "inline";
+  } else {
+    htInput.disabled = true;
+    htInput.required = false;
+    htInput.value = "";
+    htInput.classList.add("input-readonly");
+    if (star) star.style.display = "none";
+    if (errEl) errEl.classList.remove("visible");
+  }
 }
 
 // ================= STAGE 1: AUTHENTICATION =================
@@ -125,12 +235,14 @@ async function handleAuthVerification() {
       const fieldEnrollment = document.getElementById("fieldEnrollmentNo");
       const fieldAdm = document.getElementById("fieldAdmissionNo");
       const fieldSec = document.getElementById("fieldSection");
-      const fieldName = document.getElementById("fieldNameSsc");
 
       if (fieldEnrollment) fieldEnrollment.value = data.regdNo || regd;
       if (fieldAdm) fieldAdm.value = data.admissionNo || adm;
       if (fieldSec) fieldSec.value = data.section || sec;
-      if (fieldName && data.officialName) fieldName.value = data.officialName;
+
+      // Full Name (SSC) is intentionally left blank for manual input
+      const fieldName = document.getElementById("fieldNameSsc");
+      if (fieldName) fieldName.value = "";
 
       if (data.isExisting && data.previousData) {
         populateExistingForm(data.previousData);
@@ -148,7 +260,7 @@ async function handleAuthVerification() {
     }
   } catch (err) {
     if (alertEl) {
-      alertEl.innerText = `Verification error: ${err.message}. Please check network connection.`;
+      alertEl.innerText = `Verification error: ${err.message}. Please check connection.`;
       alertEl.style.display = "block";
     }
   } finally {
@@ -164,7 +276,18 @@ function populateExistingForm(d) {
   if (sscName) document.getElementById("fieldNameSsc").value = sscName;
 
   if (d.Gender) document.getElementById("fieldGender").value = d.Gender;
-  if (d.DOB) document.getElementById("fieldDob").value = d.DOB;
+
+  // Split date into Day, Month, Year
+  if (d.DOB) {
+    const parts = String(d.DOB).split("-");
+    if (parts.length === 3) {
+      document.getElementById("dobYear").value = parts[0];
+      document.getElementById("dobMonth").value = parts[1];
+      document.getElementById("dobDay").value = parts[2];
+      updateAssembledDob();
+    }
+  }
+
   if (d.Blood_Group) document.getElementById("fieldBloodGroup").value = d.Blood_Group;
   if (d.Category) document.getElementById("fieldCategory").value = d.Category;
 
@@ -212,7 +335,11 @@ function populateExistingForm(d) {
   if (coCurr) document.getElementById("fieldCoCurricular").value = coCurr;
 
   if (d.NCC_NSS) document.getElementById("fieldNccNss").value = d.NCC_NSS;
-  if (d.Admission_Type) document.getElementById("fieldAdmissionType").value = d.Admission_Type;
+  
+  if (d.Admission_Type) {
+    document.getElementById("fieldAdmissionType").value = d.Admission_Type;
+    handleAdmissionTypeChange();
+  }
   if (d.Rank_HT_No) document.getElementById("fieldRankHtNo").value = d.Rank_HT_No;
   if (d.Fee_Reimbursement) document.getElementById("fieldFeeReimb").value = d.Fee_Reimbursement;
 
@@ -230,7 +357,7 @@ function populateExistingForm(d) {
   }
 }
 
-// ================= ADDRESS & LOGISTICS CONTROLLERS =================
+// Address Synchronization
 function handleAddressSync() {
   const isChecked = document.getElementById("syncAddressCheck").checked;
   if (isChecked) {
@@ -277,7 +404,7 @@ function handleCommuteChange() {
   }
 }
 
-// ================= CANVAS 30 KB IMAGE COMPRESSION & MERGING =================
+// Canvas Proportional Compression & Merging
 function getExactByteSize(dataUrl) {
   const base64 = dataUrl.indexOf(",") > -1 ? dataUrl.split(",")[1] : dataUrl;
   try {
@@ -416,9 +543,15 @@ function synthesizeCompositeCard() {
   document.getElementById("combinedSizeTag").innerText = `Passport-Size Card: ${getKbSize(combinedCardBase64)} KB (31–34 KB)`;
 }
 
-// ================= STAGE 3: VALIDATION & A4 PREVIEW =================
+// Complete Form Validation
 function validateIdentityInputs() {
+  const admType = document.getElementById("fieldAdmissionType").value;
+  const htNo = document.getElementById("fieldRankHtNo").value.trim();
+  const feeReimb = document.getElementById("fieldFeeReimb").value;
+  const nameSsc = document.getElementById("fieldNameSsc").value.trim();
+  const dob = document.getElementById("fieldDob").value;
   const subCaste = document.getElementById("fieldCaste").value.trim();
+  const resStatus = document.getElementById("fieldResidentialStatus").value;
   const commuteMode = document.getElementById("fieldCommuteMode").value;
   const busStop = document.getElementById("fieldBusStop").value;
   const coCurricular = document.getElementById("fieldCoCurricular").value;
@@ -427,97 +560,137 @@ function validateIdentityInputs() {
   const sscMarks = document.getElementById("fieldSscMarks").value.trim();
   const interMarks = document.getElementById("fieldInterMarks").value.trim();
 
+  if (!admType) {
+    alert("Please select Admission Type.");
+    document.getElementById("fieldAdmissionType").focus();
+    return false;
+  }
+
+  if (admType === "Convenor (EAPCET)" && !htNo) {
+    alert("EAPCET Hallticket No is mandatory for Convenor admissions.");
+    document.getElementById("fieldRankHtNo").focus();
+    return false;
+  }
+
+  if (!feeReimb) {
+    alert("Please select Fee Reimbursement option.");
+    document.getElementById("fieldFeeReimb").focus();
+    return false;
+  }
+
+  if (!nameSsc) {
+    alert("Full Name (as per SSC/CBSE/ICSE) is mandatory. Please enter your name.");
+    document.getElementById("fieldNameSsc").focus();
+    return false;
+  }
+
+  if (!dob) {
+    alert("Please select your complete Date of Birth (Day, Month, Year).");
+    document.getElementById("dobDay").focus();
+    return false;
+  }
+
   if (!subCaste) {
-    alert("Error: Sub-Caste is mandatory. Please enter your sub-caste.");
+    alert("Sub-Caste is mandatory. Please enter your sub-caste.");
     document.getElementById("fieldCaste").focus();
     return false;
   }
 
   if (!/^\d+$/.test(sscMarks)) {
-    alert("Error: SSC/CBSE/ICSE Marks must be a whole number.");
+    alert("SSC/CBSE/ICSE Marks must be a whole number.");
     document.getElementById("fieldSscMarks").focus();
     return false;
   }
+
   if (!/^\d+$/.test(interMarks)) {
-    alert("Error: Inter / Diploma Marks must be a whole number.");
+    alert("Inter / Diploma Marks must be a whole number.");
     document.getElementById("fieldInterMarks").focus();
     return false;
   }
 
-  if (!commuteMode) {
-    alert("Error: College Commute Mode is mandatory.");
+  if (!resStatus) {
+    alert("Please select Residential Status.");
+    document.getElementById("fieldResidentialStatus").focus();
+    return false;
+  }
+
+  if (resStatus === "Day Scholar" && !commuteMode) {
+    alert("College Commute Mode is mandatory for Day Scholars.");
     document.getElementById("fieldCommuteMode").focus();
     return false;
   }
+
   if (commuteMode === "College Bus" && (!busStop || busStop === "NA")) {
-    alert("Error: Please select your Bus Boarding Point / Stop.");
+    alert("Please select your Bus Boarding Point / Stop.");
     document.getElementById("fieldBusStop").focus();
     return false;
   }
 
   if (!coCurricular) {
-    alert("Error: Please select an option for Extra curricular Activities.");
+    alert("Please select an option for Extra curricular Activities.");
     document.getElementById("fieldCoCurricular").focus();
     return false;
   }
+
   if (!nccNss) {
-    alert("Error: Please select an option for NCC / NSS Participation.");
+    alert("Please select an option for NCC / NSS Participation.");
     document.getElementById("fieldNccNss").focus();
     return false;
   }
 
+  // Mobile checks (10 digits)
   const studentMobile = document.getElementById("fieldStudentMobile").value.trim();
   const fatherMobile = document.getElementById("fieldFatherMobile").value.trim();
   const motherMobile = document.getElementById("fieldMotherMobile").value.trim();
 
   if (!/^\d{10}$/.test(studentMobile)) {
-    alert("Error: Student Mobile Number must be exactly 10 numeric digits.");
+    alert("Student Mobile Number must be exactly 10 numeric digits.");
     document.getElementById("fieldStudentMobile").focus();
     return false;
   }
   if (!/^\d{10}$/.test(fatherMobile)) {
-    alert("Error: Father's Mobile Number must be exactly 10 numeric digits.");
+    alert("Father's Mobile Number must be exactly 10 numeric digits.");
     document.getElementById("fieldFatherMobile").focus();
     return false;
   }
   if (motherMobile && !/^\d{10}$/.test(motherMobile)) {
-    alert("Error: Mother's Mobile Number must be exactly 10 numeric digits.");
+    alert("Mother's Mobile Number must be exactly 10 numeric digits.");
     document.getElementById("fieldMotherMobile").focus();
     return false;
   }
 
+  // Identification checks (12 digits)
   const studentAadhaar = document.getElementById("fieldStudentAadhaar").value.trim();
   const fatherAadhaar = document.getElementById("fieldFatherAadhaar").value.trim();
   const motherAadhaar = document.getElementById("fieldMotherAadhaar").value.trim();
 
   if (!/^\d{12}$/.test(studentAadhaar)) {
-    alert("Error: Student Aadhaar Number must be exactly 12 numeric digits.");
+    alert("Student Identification Number must be exactly 12 numeric digits.");
     document.getElementById("fieldStudentAadhaar").focus();
     return false;
   }
   if (!/^\d{12}$/.test(fatherAadhaar)) {
-    alert("Error: Father's Aadhaar Number must be exactly 12 numeric digits.");
+    alert("Father's Identification Number must be exactly 12 numeric digits.");
     document.getElementById("fieldFatherAadhaar").focus();
     return false;
   }
   if (!/^\d{12}$/.test(motherAadhaar)) {
-    alert("Error: Mother's Aadhaar Number must be exactly 12 numeric digits.");
+    alert("Mother's Identification Number must be exactly 12 numeric digits.");
     document.getElementById("fieldMotherAadhaar").focus();
+    return false;
+  }
+
+  if (!compressedPhotoBase64 || !compressedSignBase64 || !combinedCardBase64) {
+    alert("Please upload both your Passport Photo and Signature.");
     return false;
   }
 
   return true;
 }
 
+// Preview Screen Controller
 function generateAndShowA4Preview() {
-  if (!validateIdentityInputs()) {
-    return;
-  }
-
-  if (!compressedPhotoBase64 || !compressedSignBase64 || !combinedCardBase64) {
-    alert("Please upload both your Passport Photo and Signature before previewing.");
-    return;
-  }
+  if (!validateIdentityInputs()) return;
 
   document.getElementById("pEnrollmentNo").innerText = document.getElementById("fieldEnrollmentNo").value;
   document.getElementById("pAdmissionNo").innerText = document.getElementById("fieldAdmissionNo").value;
@@ -582,15 +755,23 @@ function closePreviewToEdit() {
   document.getElementById("formCard").style.display = "block";
 }
 
-// ================= STAGE 4: CLOUD SUBMISSION =================
-async function submitApplicationToCloud() {
-  const submitBtn = document.getElementById("finalSubmitBtn");
-  const statusEl = document.getElementById("submissionStatus");
+// Direct Form Submission
+function executeSubmissionDirectly() {
+  if (!validateIdentityInputs()) return;
+  if (confirm("Are you sure you want to submit your application details directly?")) {
+    submitApplicationToCloud(true);
+  }
+}
+
+// Cloud Submission Pipeline
+async function submitApplicationToCloud(isDirectFromForm = false) {
+  const submitBtn = document.getElementById(isDirectFromForm ? "formDirectSubmitBtn" : "finalSubmitBtn");
+  const statusEl = document.getElementById(isDirectFromForm ? "formDirectStatus" : "submissionStatus");
   const postActions = document.getElementById("postSubmitActions");
 
   submitBtn.disabled = true;
   statusEl.style.display = "block";
-  statusEl.style.color = "#2563eb";
+  statusEl.className = "alert-box info";
   statusEl.innerText = "Submitting application and generating university records...";
 
   const commuteMode = document.getElementById("fieldCommuteMode").value.trim();
@@ -607,80 +788,3 @@ async function submitApplicationToCloud() {
     apaarId: document.getElementById("fieldApaarId").value.trim(),
 
     studentNameSsc: document.getElementById("fieldNameSsc").value.trim(),
-    gender: document.getElementById("fieldGender").value.trim(),
-    dob: document.getElementById("fieldDob").value.trim(),
-    bloodGroup: document.getElementById("fieldBloodGroup").value.trim(),
-    category: document.getElementById("fieldCategory").value.trim(),
-    caste: document.getElementById("fieldCaste").value.trim(),
-    studentMobile: document.getElementById("fieldStudentMobile").value.trim(),
-    studentEmail: document.getElementById("fieldStudentEmail").value.trim(),
-    studentAadhaar: document.getElementById("fieldStudentAadhaar").value.trim(),
-    identificationMark1: document.getElementById("fieldIdMark1").value.trim(),
-    identificationMark2: document.getElementById("fieldIdMark2").value.trim(),
-
-    sscRegdNo: document.getElementById("fieldSscRegd").value.trim(),
-    sscMarks: document.getElementById("fieldSscMarks").value.trim(),
-    sscPercentage: document.getElementById("fieldSscPercent").value.trim(),
-    interRegdNo: document.getElementById("fieldInterRegd").value.trim(),
-    interMarks: document.getElementById("fieldInterMarks").value.trim(),
-    interPercentage: document.getElementById("fieldInterPercent").value.trim(),
-
-    fatherName: document.getElementById("fieldFatherName").value.trim(),
-    fatherMobile: document.getElementById("fieldFatherMobile").value.trim(),
-    fatherOccupation: document.getElementById("fieldFatherOcc").value.trim(),
-    fatherAadhaar: document.getElementById("fieldFatherAadhaar").value.trim(),
-    motherName: document.getElementById("fieldMotherName").value.trim(),
-    motherMobile: document.getElementById("fieldMotherMobile").value.trim(),
-    motherOccupation: document.getElementById("fieldMotherOcc").value.trim(),
-    motherAadhaar: document.getElementById("fieldMotherAadhaar").value.trim(),
-
-    permanentAddress: document.getElementById("fieldPermAddress").value.trim(),
-    permanentDistrict: document.getElementById("fieldPermDistrict").value.trim(),
-    permanentState: document.getElementById("fieldPermState").value.trim(),
-    permanentPincode: document.getElementById("fieldPermPincode").value.trim(),
-    currentAddress: document.getElementById("fieldCurrAddress").value.trim(),
-    currentDistrict: document.getElementById("fieldCurrDistrict").value.trim(),
-    currentPincode: document.getElementById("fieldCurrPincode").value.trim(),
-
-    coCurricular: document.getElementById("fieldCoCurricular").value.trim(),
-    nccNss: document.getElementById("fieldNccNss").value.trim(),
-    residentialStatus: document.getElementById("fieldResidentialStatus").value.trim(),
-    hostelSharing: document.getElementById("fieldHostelSharing") ? document.getElementById("fieldHostelSharing").value.trim() : "",
-    collegeTravelMode: commuteMode,
-    busBoardingPoint: boardingStop,
-
-    photo: compressedPhotoBase64,
-    signature: compressedSignBase64,
-    combined: combinedCardBase64
-  };
-
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload)
-    });
-    const result = await res.json();
-
-    if (result && result.status === "success") {
-      statusEl.style.color = "#16a34a";
-      statusEl.innerHTML = `✓ Application Saved & PDF Backup Created for ${result.regdNo}!`;
-      submitBtn.style.display = "none";
-      if (document.querySelector(".screen-notice")) {
-        document.querySelector(".screen-notice").style.display = "none";
-      }
-      const editBtn = document.querySelector(".preview-actions button:first-child");
-      if (editBtn) editBtn.style.display = "none";
-
-      postActions.style.display = "flex";
-
-      window.print();
-    } else {
-      throw new Error(result ? result.message : "Submission rejected");
-    }
-  } catch (err) {
-    statusEl.style.color = "#dc2626";
-    statusEl.innerText = `Submission failed: ${err.message}`;
-    submitBtn.disabled = false;
-  }
-}
