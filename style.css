@@ -144,6 +144,14 @@ input:focus, select:focus {
   box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.15);
 }
 
+/* Field Hint & Explanatory Subtext */
+.field-hint {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.25;
+}
+
 /* Validation Feedback Styles */
 .field-error {
   color: var(--danger);
@@ -252,7 +260,7 @@ input:focus, select:focus {
   margin-top: 6px;
 }
 
-/* Buttons & Dual Actions */
+/* Buttons & Actions */
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -482,83 +490,4 @@ input:focus, select:focus {
   font-style: italic;
   color: #64748b;
   margin-top: 14px;
-  line-height: 1.35;
-}
-
-/* ==========================================
-   PRINT MEDIA RULES
-   ========================================== */
-
-@media print {
-  body {
-    background: #ffffff !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  .app-header,
-  .form-header,
-  #authCard,
-  #welcomeBanner,
-  #formCard,
-  .screen-notice,
-  .preview-actions,
-  .dual-actions,
-  #submissionStatus,
-  #postSubmitActions,
-  #post-actions {
-    display: none !important;
-  }
-
-  .main-container, .container {
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-  }
-
-  .card {
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  .a4-document, .a4-preview-wrapper {
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  .top-composite-grid, .preview-top-grid {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: flex-start !important;
-  }
-
-  .id-card-display-wrapper, .preview-photo-box {
-    width: 120px !important;
-    flex-shrink: 0 !important;
-    display: block !important;
-  }
-
-  .composite-card-img, .preview-photo-box img {
-    width: 110px !important;
-    height: 141px !important;
-    border: 1.5px solid #000000 !important;
-    page-break-inside: avoid !important;
-  }
-
-  .doc-table td, .doc-table th, .preview-table td, .preview-table th {
-    font-size: 8pt !important;
-    padding: 2.5px 5px !important;
-  }
-
-  @page {
-    size: A4 portrait;
-    margin: 12mm;
-  }
-}
+  line-height:
